@@ -1,0 +1,38 @@
+@page
+@model BannedModel
+@{
+    ViewData["Title"] = "banned.title";
+}
+
+<main class="container">
+    <div class="auth-container">
+        <div class="alert alert-danger" style="margin-bottom: 1.5rem;">
+            <h2 style="margin-top: 0;">
+                <span class="prompt-symbol">&gt;</span> <span data-i18n="banned.title">Account Banned</span>
+            </h2>
+        </div>
+
+        <div class="alert alert-warning" style="margin-bottom: 1.5rem;">
+            <p style="margin-bottom: 0.5rem;" data-i18n="banned.message">Your account has been banned from the platform.</p>
+            
+            @if (!string.IsNullOrEmpty(Model.BanReason))
+            {
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-left: 3px solid #dc3545;">
+                    <strong data-i18n="banned.reason_label">Reason:</strong>
+                    <p style="margin-bottom: 0; margin-top: 0.5rem;">@Model.BanReason</p>
+                </div>
+            }
+        </div>
+
+        <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+            <p style="margin-bottom: 0.5rem;" data-i18n="banned.contact_message">If you believe this is a mistake or want to appeal this ban, please contact the administrator:</p>
+            <p style="margin-bottom: 0;">
+                <strong>Email:</strong> <a href="mailto:mti3t.dev@gmail.com" style="color: inherit; text-decoration: underline;">mti3t.dev@gmail.com</a>
+            </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/" class="btn btn-secondary" data-i18n="banned.back_home">Back to Home</a>
+        </div>
+    </div>
+</main>

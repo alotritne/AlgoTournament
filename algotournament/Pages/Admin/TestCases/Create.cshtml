@@ -12,8 +12,8 @@
     </div>
     
     <div class="admin-form-container">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="post" asp-route-problemId="@Model.TestCase.ProblemId">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="TestCase.ProblemId" />
             
             <div class="form-group mb-3">

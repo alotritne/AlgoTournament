@@ -1,0 +1,81 @@
+@page
+@model algotournament.Pages.Admin.Seasons.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_seasons";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1 data-i18n="admin.manage_seasons">Manage Seasons</h1>
+        <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_season">Create Season</a>
+    </div>
+
+    <div class="admin-search-bar" style="margin-bottom: 1rem;">
+        <input type="text" id="seasonSearch" class="brutalist-input" style="width: 100%;" placeholder="Search seasons..." data-i18n-placeholder="admin.search_seasons_placeholder" onkeyup="filterSeasons()" />
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table" id="seasonsTable">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.id">ID</th>
+                    <th data-i18n="common.name">Name</th>
+                    <th data-i18n="common.description">Description</th>
+                    <th data-i18n="admin.start_date">Start Date</th>
+                    <th data-i18n="admin.end_date">End Date</th>
+                    <th data-i18n="admin.is_active">Is Active</th>
+                    <th data-i18n="admin.tournaments">Tournaments</th>
+                    <th data-i18n="admin.created_at">Created At</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var season in Model.Seasons)
+                {
+                    <tr>
+                        <td>@season.Id</td>
+                        <td>@season.Name</td>
+                        <td>@season.Description</td>
+                        <td>@season.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@season.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td data-i18n="@($"admin.{(season.IsActive ? "yes" : "no")}")">@(season.IsActive ? "Yes" : "No")</td>
+                        <td>@season.Tournaments.Count</td>
+                        <td>@season.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@season.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            <a asp-page="Delete" asp-route-id="@season.Id" class="btn btn-sm btn-delete" data-i18n="common.delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterSeasons() {
+            const input = document.getElementById('seasonSearch');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('seasonsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const textValue = cells[j].textContent || cells[j].innerText;
+                        if (textValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+}

@@ -47,6 +47,15 @@ namespace algotournament.Pages.Admin.TestCases
                 return Page();
             }
 
+            // Validate ProblemId exists
+            var problemExists = await _context.Problems.AnyAsync(p => p.Id == TestCase.ProblemId);
+            if (!problemExists)
+            {
+                ModelState.AddModelError("TestCase.ProblemId", "Problem does not exist.");
+                Problem = await _context.Problems.FindAsync(TestCase.ProblemId);
+                return Page();
+            }
+
             _context.Attach(TestCase).State = EntityState.Modified;
 
             try

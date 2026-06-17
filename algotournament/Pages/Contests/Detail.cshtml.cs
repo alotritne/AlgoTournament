@@ -27,6 +27,7 @@ namespace algotournament.Pages.Contests
         public bool HasStarted { get; set; }
         public bool HasEnded { get; set; }
         public int ParticipantCount { get; set; }
+        public Dictionary<int, int> ProblemSolvedCounts { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -58,6 +59,16 @@ namespace algotournament.Pages.Contests
             // Get participant count
             ParticipantCount = await _context.ContestParticipants
                 .CountAsync(cp => cp.ContestId == id);
+
+            // Calculate solved counts for each problem
+            var problemIds = ContestProblems.Select(cp => cp.ProblemId).ToList();
+            var solvedCounts = await _context.Submissions
+                .Where(s => problemIds.Contains(s.ProblemId) && s.Status == SubmissionStatus.Accepted)
+                .GroupBy(s => s.ProblemId)
+                .Select(g => new { ProblemId = g.Key, Count = g.Select(s => s.UserId).Distinct().Count() })
+                .ToListAsync();
+
+            ProblemSolvedCounts = solvedCounts.ToDictionary(x => x.ProblemId, x => x.Count);
 
             return Page();
         }
@@ -150,8 +161,7 @@ namespace algotournament.Pages.Contests
 
         public int GetProblemSolvedCount(int problemId)
         {
-            // For now, return a random number. In a real implementation, this would count actual solved submissions
-            return new Random().Next(100, 10000);
+            return ProblemSolvedCounts.TryGetValue(problemId, out var count) ? count : 0;
         }
     }
 }

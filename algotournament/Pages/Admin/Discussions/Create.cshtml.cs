@@ -26,21 +26,19 @@ namespace algotournament.Pages.Admin.Discussions
 
         public SelectList Problems { get; set; } = null!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            var problems = await _context.Problems
-                .Where(p => p.IsPublic)
-                .Select(p => new { p.Id, p.TitleVi })
-                .ToListAsync();
-
-            Problems = new SelectList(problems, "Id", "TitleVi");
+            await LoadProblemsAsync();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                await OnGetAsync();
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                TempData["ValidationErrors"] = string.Join("; ", errors);
+                await LoadProblemsAsync();
                 return Page();
             }
 
@@ -50,16 +48,46 @@ namespace algotournament.Pages.Admin.Discussions
                 return RedirectToPage("/Account/Login");
             }
 
-            Discussion.AuthorId = currentUser.Id;
-            Discussion.CreatedAt = DateTime.UtcNow;
-            Discussion.UpdatedAt = DateTime.UtcNow;
-            Discussion.ReplyCount = 0;
-            Discussion.ViewCount = 0;
+            if (Discussion.ProblemId.HasValue)
+            {
+                var problemExists = await _context.Problems.AnyAsync(p => p.Id == Discussion.ProblemId.Value);
+                if (!problemExists)
+                {
+                    ModelState.AddModelError("Discussion.ProblemId", "Selected problem does not exist.");
+                    await LoadProblemsAsync();
+                    return Page();
+                }
+            }
 
-            _context.Discussions.Add(Discussion);
-            await _context.SaveChangesAsync();
+            try
+            {
+                Discussion.AuthorId = currentUser.Id;
+                Discussion.CreatedAt = DateTime.UtcNow;
+                Discussion.UpdatedAt = DateTime.UtcNow;
+                Discussion.ReplyCount = 0;
+                Discussion.ViewCount = 0;
+
+                _context.Discussions.Add(Discussion);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Could not create discussion: {ex.Message}";
+                await LoadProblemsAsync();
+                return Page();
+            }
 
             return RedirectToPage("./Index");
+        }
+
+        private async Task LoadProblemsAsync()
+        {
+            var problems = await _context.Problems
+                .Where(p => p.IsPublic)
+                .OrderBy(p => p.TitleVi)
+                .Select(p => new { p.Id, p.TitleVi })
+                .ToListAsync();
+            Problems = new SelectList(problems, "Id", "TitleVi");
         }
     }
 }

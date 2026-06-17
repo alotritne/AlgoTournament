@@ -1,0 +1,52 @@
+@page
+@model algotournament.Pages.Admin.Seasons.DeleteModel
+@{
+    ViewData["Title"] = "admin.delete_season";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <h1 data-i18n="admin.delete_season">Delete Season</h1>
+    
+    <div class="alert alert-danger">
+        <h3 data-i18n="admin.delete_season_confirmation">Are you sure you want to delete this season?</h3>
+        <p data-i18n="admin.delete_season_warning">This action cannot be undone. All associated tournaments will also be deleted.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3" data-i18n="admin.id">ID</dt>
+                <dd class="col-sm-9">@Model.Season.Id</dd>
+                
+                <dt class="col-sm-3" data-i18n="common.name">Name</dt>
+                <dd class="col-sm-9">@Model.Season.Name</dd>
+                
+                <dt class="col-sm-3" data-i18n="common.description">Description</dt>
+                <dd class="col-sm-9">@Model.Season.Description</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.start_date">Start Date</dt>
+                <dd class="col-sm-9">@Model.Season.StartDate.ToString("yyyy-MM-dd")</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.end_date">End Date</dt>
+                <dd class="col-sm-9">@Model.Season.EndDate.ToString("yyyy-MM-dd")</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.is_active">Is Active</dt>
+                <dd class="col-sm-9">@(Model.Season.IsActive ? "Yes" : "No")</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.tournaments">Tournaments</dt>
+                <dd class="col-sm-9">@Model.Season.Tournaments.Count</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.created_at">Created At</dt>
+                <dd class="col-sm-9">@Model.Season.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+            </dl>
+            
+            <form method="post">
+                <input type="hidden" asp-for="Season.Id" />
+                <input type="submit" value="Delete" class="btn btn-danger" data-i18n="common.delete" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

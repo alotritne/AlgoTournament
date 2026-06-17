@@ -4,12 +4,28 @@
     ViewData["Title"] = "admin.edit_contest";
 }
 
+@await Html.PartialAsync("_AdminNavbar")
+
 <div class="container mt-4">
     <div class="admin-header">
         <h1 data-i18n="admin.edit_contest">Edit Contest</h1>
     </div>
     
     <div class="admin-form-container">
+        @if (TempData["ErrorMessage"] is string errorMessage)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ValidationErrors"] is string validationErrors)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Validation Errors:</strong> @validationErrors
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Contest.Id" />
@@ -28,7 +44,9 @@
             
             <div class="form-group mb-3">
                 <label asp-for="Contest.TournamentId" class="control-label" data-i18n="admin.tournament"></label>
-                <select asp-for="Contest.TournamentId" class="form-control" asp-items="Model.Tournaments"></select>
+                <select asp-for="Contest.TournamentId" class="form-control" asp-items="Model.Tournaments">
+                    <option value="">-- Select Tournament --</option>
+                </select>
                 <span asp-validation-for="Contest.TournamentId" class="text-danger"></span>
             </div>
             

@@ -1,0 +1,33 @@
+@page
+@model ContactModel
+@{
+    ViewData["Title"] = "contact.title";
+}
+
+<main class="container">
+    <div class="auth-container">
+        <h1 class="auth-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="contact.title">Contact Admin</span></h1>
+
+        <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+            <p style="margin-bottom: 0.5rem;" data-i18n="contact.message">If you have any questions, issues, or need support, please contact the administrator:</p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <div style="margin-bottom: 1rem;">
+                <strong data-i18n="contact.email">Email:</strong>
+                <a href="mailto:mti3t.dev@gmail.com" style="color: #007bff; text-decoration: underline;">mti3t.dev@gmail.com</a>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong data-i18n="contact.facebook">Facebook:</strong>
+                <a href="https://www.facebook.com/algotritne" target="_blank" rel="noopener noreferrer" style="color: #007bff; text-decoration: underline;">
+                    https://www.facebook.com/algotritne
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/" class="btn btn-secondary" data-i18n="contact.back_home">Back to Home</a>
+        </div>
+    </div>
+</main>

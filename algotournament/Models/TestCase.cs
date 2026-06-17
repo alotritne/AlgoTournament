@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace algotournament.Models
 {
     public class TestCase
@@ -12,6 +14,7 @@ namespace algotournament.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         // Navigation properties
-        public virtual Problem Problem { get; set; } = null!;
+        [BindNever]
+        public virtual Problem? Problem { get; set; }
     }
 }

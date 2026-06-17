@@ -3,8 +3,9 @@ using algotournament.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
 namespace algotournament.Pages.Admin.Tournaments
 {
     [Authorize(Policy = "RequireAdminRole")]
@@ -29,44 +30,71 @@ namespace algotournament.Pages.Admin.Tournaments
                 return NotFound();
             }
 
-            Tournament = await _context.Tournaments.FindAsync(id);
-
-            if (Tournament == null)
+            var tournament = await _context.Tournaments.FindAsync(id);
+            if (tournament == null)
             {
                 return NotFound();
             }
 
-            SeasonSelectList = new SelectList(_context.Seasons, "Id", "Name");
+            Tournament = tournament;
+            var seasons = await _context.Seasons.OrderBy(s => s.Name).ToListAsync();
+            SeasonSelectList = new SelectList(seasons, "Id", "Name", Tournament.SeasonId);
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                SeasonSelectList = new SelectList(_context.Seasons, "Id", "Name");
+                return NotFound();
+            }
+
+            var existing = await _context.Tournaments.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            // Validate SeasonId exists
+            var seasonExists = await _context.Seasons.AnyAsync(s => s.Id == Tournament.SeasonId);
+            if (!seasonExists)
+            {
+                ModelState.AddModelError("Tournament.SeasonId", "Selected season does not exist.");
+                var seasons = await _context.Seasons.OrderBy(s => s.Name).ToListAsync();
+                SeasonSelectList = new SelectList(seasons, "Id", "Name", Tournament.SeasonId);
+                Tournament = existing;
                 return Page();
             }
 
-            _context.Attach(Tournament).State = EntityState.Modified;
-
-            try
+            if (await TryUpdateModelAsync(
+                existing,
+                "Tournament",
+                t => t.Name, t => t.Description, t => t.SeasonId,
+                t => t.IsPrivate, t => t.AccessCode, t => t.IsActive))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Tournaments.Any(e => e.Id == Tournament.Id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
+                    if (!await _context.Tournaments.AnyAsync(e => e.Id == existing.Id))
+                    {
+                        return NotFound();
+                    }
                     throw;
                 }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Could not save tournament: {ex.Message}";
+                }
             }
 
-            return RedirectToPage("./Index");
+            var seasonsList = await _context.Seasons.OrderBy(s => s.Name).ToListAsync();
+            SeasonSelectList = new SelectList(seasonsList, "Id", "Name", Tournament.SeasonId);
+            Tournament = existing;
+            return Page();
         }
     }
 }

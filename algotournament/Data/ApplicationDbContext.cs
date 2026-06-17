@@ -49,6 +49,10 @@ namespace algotournament.Data
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.AccessCode).HasMaxLength(50);
+                entity.HasOne(e => e.Season)
+                    .WithMany(s => s.Tournaments)
+                    .HasForeignKey(e => e.SeasonId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Contest configuration

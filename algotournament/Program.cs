@@ -85,7 +85,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.AccessDeniedPath = "/Error/404";
     options.SlidingExpiration = true;
 });
 
@@ -150,8 +150,13 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<BannedUserMiddleware>();
+
 app.MapRazorPages();
 app.MapHub<DuelHub>("/hubs/duel");
+
+// Fallback route for 404
+app.MapFallbackToPage("/Error/404");
 
 // Seed data
 using (var scope = app.Services.CreateScope())

@@ -20,7 +20,7 @@ namespace algotournament.Pages.Admin.Contests
 
         [BindProperty]
         public Contest Contest { get; set; } = new();
-        
+
         public SelectList Tournaments { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -30,47 +30,82 @@ namespace algotournament.Pages.Admin.Contests
                 return NotFound();
             }
 
-            Contest = await _context.Contests.FindAsync(id);
-
-            if (Contest == null)
+            var contest = await _context.Contests.FindAsync(id);
+            if (contest == null)
             {
                 return NotFound();
             }
 
+            Contest = contest;
             var tournaments = await _context.Tournaments.OrderBy(t => t.Name).ToListAsync();
             Tournaments = new SelectList(tournaments, "Id", "Name", Contest.TournamentId);
-
+            // Ensure a placeholder option so the user can never post an invalid (0) TournamentId
+            if (Contest.TournamentId == 0 || !tournaments.Any(t => t.Id == Contest.TournamentId))
+            {
+                Tournaments = new SelectList(tournaments, "Id", "Name", null);
+            }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
+                return NotFound();
+            }
+
+            var existing = await _context.Contests.FindAsync(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            if (Contest.EndTime <= Contest.StartTime)
+            {
+                ModelState.AddModelError("Contest.EndTime", "End time must be after start time.");
                 var tournaments = await _context.Tournaments.OrderBy(t => t.Name).ToListAsync();
                 Tournaments = new SelectList(tournaments, "Id", "Name", Contest.TournamentId);
                 return Page();
             }
 
-            _context.Attach(Contest).State = EntityState.Modified;
-
-            try
+            var tournamentExists = await _context.Tournaments.AnyAsync(t => t.Id == Contest.TournamentId);
+            if (!tournamentExists)
             {
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("Contest.TournamentId", "Selected tournament does not exist.");
+                var tournaments = await _context.Tournaments.OrderBy(t => t.Name).ToListAsync();
+                Tournaments = new SelectList(tournaments, "Id", "Name", Contest.TournamentId);
+                return Page();
             }
-            catch (DbUpdateConcurrencyException)
+
+            if (await TryUpdateModelAsync(
+                existing,
+                "Contest",
+                c => c.Name, c => c.Description, c => c.TournamentId,
+                c => c.StartTime, c => c.EndTime, c => c.DurationMinutes,
+                c => c.ScoringMode, c => c.IsRated))
             {
-                if (!_context.Contests.Any(e => e.Id == Contest.Id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
+                    if (!await _context.Contests.AnyAsync(e => e.Id == existing.Id))
+                    {
+                        return NotFound();
+                    }
                     throw;
                 }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Could not save contest: {ex.Message}";
+                }
             }
 
-            return RedirectToPage("./Index");
+            var tournaments2 = await _context.Tournaments.OrderBy(t => t.Name).ToListAsync();
+            Tournaments = new SelectList(tournaments2, "Id", "Name", Contest.TournamentId);
+            return Page();
         }
     }
 }

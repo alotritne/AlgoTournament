@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using algotournament.Data;
 using algotournament.Models;
@@ -26,23 +27,41 @@ namespace algotournament.Pages.Admin.Blog
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var logger = HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("BlogCreate");
+
             if (!ModelState.IsValid)
             {
+                var errors = ModelState
+                    .Where(kv => kv.Value!.Errors.Count > 0)
+                    .Select(kv => $"{kv.Key}: {string.Join(", ", kv.Value!.Errors.Select(e => e.ErrorMessage))}");
+                logger.LogWarning("BlogCreate ModelState invalid: {Errors}", string.Join(" | ", errors));
                 return Page();
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
+                logger.LogWarning("BlogCreate currentUser is null");
                 return RedirectToPage("/Account/Login");
             }
 
             BlogPost.AuthorId = currentUser.Id;
             BlogPost.Slug = await GenerateUniqueSlugAsync(BlogPost.Title);
             BlogPost.PublishedAt = DateTime.UtcNow;
+            BlogPost.Author = null!;
 
-            _context.BlogPosts.Add(BlogPost);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.BlogPosts.Add(BlogPost);
+                await _context.SaveChangesAsync();
+                logger.LogInformation("BlogPost created id={Id} slug={Slug}", BlogPost.Id, BlogPost.Slug);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to save BlogPost");
+                ModelState.AddModelError(string.Empty, $"Could not save: {ex.Message}");
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

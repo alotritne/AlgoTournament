@@ -14,6 +14,10 @@
         <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_new_problem">Create New Problem</a>
     </div>
 
+    <div class="admin-search-bar" style="margin-bottom: 1rem;">
+        <input type="text" id="problemSearch" class="brutalist-input" style="width: 100%;" placeholder="Search problems..." data-i18n-placeholder="admin.search_problems_placeholder" onkeyup="filterProblems()" />
+    </div>
+
     <div class="admin-table-wrapper">
         <table class="table admin-table">
             <thead>
@@ -52,3 +56,29 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function filterProblems() {
+            const input = document.getElementById('problemSearch');
+            const filter = input.value.toLowerCase();
+            const table = document.querySelector('.admin-table');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const textValue = cells[j].textContent || cells[j].innerText;
+                        if (textValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+}

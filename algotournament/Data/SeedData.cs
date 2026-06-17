@@ -87,6 +87,14 @@ namespace algotournament.Data
                 {
                     await userManager.AddToRoleAsync(adminUser, "SuperAdmin");
                 }
+
+                // Reset password to known value to fix any stale password issues
+                var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+                var resetResult = await userManager.ResetPasswordAsync(adminUser, token, adminPassword);
+                if (resetResult.Succeeded)
+                {
+                    Console.WriteLine($"Reset SuperAdmin password for: {adminEmail}");
+                }
             }
         }
 
@@ -215,44 +223,17 @@ namespace algotournament.Data
                 return;
             }
 
-            // Check if custom tournament already exists and remove it to force re-seeding
+            // Check if custom tournament already exists - if so, skip seeding
             var existingTournament = await context.Tournaments
                 .FirstOrDefaultAsync(t => t.Name == "Vietnam Algorithm Championship 2024");
             
             if (existingTournament != null)
             {
-                Console.WriteLine("Found existing tournament, removing for re-seeding...");
-                
-                // First delete related contests (due to foreign key constraint)
-                var relatedContests = await context.Contests
-                    .Where(c => c.TournamentId == existingTournament.Id)
-                    .ToListAsync();
-                
-                if (relatedContests.Any())
-                {
-                    Console.WriteLine($"Removing {relatedContests.Count} related contests...");
-                    
-                    // Delete contest-problem relationships
-                    var contestIds = relatedContests.Select(c => c.Id).ToList();
-                    var existingContestProblems = await context.ContestProblems
-                        .Where(cp => contestIds.Contains(cp.ContestId))
-                        .ToListAsync();
-                    if (existingContestProblems.Any())
-                    {
-                        context.ContestProblems.RemoveRange(existingContestProblems);
-                        await context.SaveChangesAsync();
-                    }
-                    
-                    context.Contests.RemoveRange(relatedContests);
-                    await context.SaveChangesAsync();
-                }
-                
-                // Then delete the tournament
-                context.Tournaments.Remove(existingTournament);
-                await context.SaveChangesAsync();
+                Console.WriteLine("Custom tournament already exists, skipping custom data seeding");
+                return;
             }
-            
-            // Delete existing problems with custom data slugs to avoid duplicates
+
+            // Check if any of the custom problems already exist
             var customSlugs = new[] 
             { 
                 "tong-hai-so", "uoc-so-chung-lon-nhat", "fibonacci", "sap-xep-mang", 
@@ -262,82 +243,12 @@ namespace algotournament.Data
             
             var existingProblems = await context.Problems
                 .Where(p => customSlugs.Contains(p.Slug))
-                .ToListAsync();
+                .AnyAsync();
             
-            if (existingProblems.Any())
+            if (existingProblems)
             {
-                Console.WriteLine($"Removing {existingProblems.Count} existing problems...");
-                
-                var problemIds = existingProblems.Select(p => p.Id).ToList();
-                
-                // Delete duel rooms and related data
-                var duelRooms = await context.DuelRooms
-                    .Where(dr => problemIds.Contains(dr.ProblemId))
-                    .ToListAsync();
-                if (duelRooms.Any())
-                {
-                    var duelRoomIds = duelRooms.Select(dr => dr.Id).ToList();
-                    
-                    // Delete duel matches related to these duel rooms
-                    var duelMatches = await context.DuelMatches
-                        .Where(dm => duelRoomIds.Contains(dm.DuelRoomId))
-                        .ToListAsync();
-                    if (duelMatches.Any())
-                    {
-                        var duelMatchIds = duelMatches.Select(dm => dm.Id).ToList();
-                        
-                        // Delete submissions that reference these duel matches
-                        var submissions = await context.Submissions
-                            .Where(s => s.DuelMatchId.HasValue && duelMatchIds.Contains(s.DuelMatchId.Value))
-                            .ToListAsync();
-                        if (submissions.Any())
-                        {
-                            // Delete submission results for these submissions
-                            var submissionIds = submissions.Select(s => s.Id).ToList();
-                            var submissionResults = await context.SubmissionResults
-                                .Where(sr => submissionIds.Contains(sr.SubmissionId))
-                                .ToListAsync();
-                            if (submissionResults.Any())
-                            {
-                                context.SubmissionResults.RemoveRange(submissionResults);
-                                await context.SaveChangesAsync();
-                            }
-                            
-                            context.Submissions.RemoveRange(submissions);
-                            await context.SaveChangesAsync();
-                        }
-                        
-                        context.DuelMatches.RemoveRange(duelMatches);
-                        await context.SaveChangesAsync();
-                    }
-                    
-                    context.DuelRooms.RemoveRange(duelRooms);
-                    await context.SaveChangesAsync();
-                }
-                
-                // Delete test cases for these problems
-                var existingTestCases = await context.TestCases
-                    .Where(tc => problemIds.Contains(tc.ProblemId))
-                    .ToListAsync();
-                if (existingTestCases.Any())
-                {
-                    // Delete submission results that reference these test cases
-                    var testCaseIds = existingTestCases.Select(tc => tc.Id).ToList();
-                    var submissionResults = await context.SubmissionResults
-                        .Where(sr => testCaseIds.Contains(sr.TestCaseId))
-                        .ToListAsync();
-                    if (submissionResults.Any())
-                    {
-                        context.SubmissionResults.RemoveRange(submissionResults);
-                        await context.SaveChangesAsync();
-                    }
-                    
-                    context.TestCases.RemoveRange(existingTestCases);
-                    await context.SaveChangesAsync();
-                }
-                
-                context.Problems.RemoveRange(existingProblems);
-                await context.SaveChangesAsync();
+                Console.WriteLine("Custom problems already exist, skipping custom data seeding");
+                return;
             }
             
             Console.WriteLine("Starting custom data seeding...");

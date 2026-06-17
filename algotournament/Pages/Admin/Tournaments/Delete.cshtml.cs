@@ -46,15 +46,41 @@ namespace algotournament.Pages.Admin.Tournaments
                 return NotFound();
             }
 
-            Tournament = await _context.Tournaments.FindAsync(id);
+            var tournament = await _context.Tournaments
+                .Include(t => t.Contests)
+                    .ThenInclude(c => c.ContestProblems)
+                .Include(t => t.Contests)
+                    .ThenInclude(c => c.Participants)
+                .Include(t => t.Contests)
+                    .ThenInclude(c => c.Submissions)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Tournament != null)
+            if (tournament == null)
             {
-                _context.Tournaments.Remove(Tournament);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            try
+            {
+                foreach (var contest in tournament.Contests.ToList())
+                {
+                    _context.Submissions.RemoveRange(contest.Submissions);
+                    _context.ContestParticipants.RemoveRange(contest.Participants);
+                    _context.ContestProblems.RemoveRange(contest.ContestProblems);
+                    _context.Contests.Remove(contest);
+                }
+
+                _context.Tournaments.Remove(tournament);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Could not delete tournament: {ex.Message}";
+                Tournament = tournament;
+                return Page();
+            }
         }
     }
 }

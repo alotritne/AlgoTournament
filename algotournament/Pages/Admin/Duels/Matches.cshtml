@@ -1,0 +1,90 @@
+@page
+@model algotournament.Pages.Admin.Duels.MatchesModel
+@{
+    ViewData["Title"] = "admin.duel_matches";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.matches">matches</span></h1>
+    <a asp-page="./Index" class="btn btn-secondary" style="margin-left: 1rem;" data-i18n="common.back">Back</a>
+</div>
+
+<div class="admin-search-bar" style="margin-bottom: 1rem;">
+    <input type="text" id="searchInput" class="brutalist-input" style="width: 100%;" placeholder="Search matches..." data-i18n-placeholder="common.search" />
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="admin.id">ID</th>
+                <th data-i18n="duels.room">Room</th>
+                <th data-i18n="problems.title">Problem</th>
+                <th data-i18n="submissions.status">Status</th>
+                <th data-i18n="duels.score">Score</th>
+                <th data-i18n="dashboard.created_at">Started</th>
+                <th data-i18n="admin.actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Matches.Any())
+            {
+                @foreach (var match in Model.Matches)
+                {
+                    <tr>
+                        <td>@match.Id</td>
+                        <td>@match.Room.RoomCode</td>
+                        <td>@match.Room.Problem.TitleVi</td>
+                        <td>@match.Status</td>
+                        <td>@match.FinalScorePlayer1 - @match.FinalScorePlayer2</td>
+                        <td>@match.StartedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <form method="post" asp-page-handler="ForceEnd" style="display:inline;">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="duels.force_end">Force End</button>
+                            </form>
+                            <form method="post" asp-page-handler="Recalculate" style="display:inline;">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="duels.recalc_result">Recalc Result</button>
+                            </form>
+                            <form method="post" asp-page-handler="DeleteMatch" style="display:inline;" onsubmit="return confirm('Delete this match?');">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="common.delete">Delete</button>
+                            </form>
+                            <a asp-page="/Duels/Result" asp-route-id="@match.Id" style="font-weight:700;" data-i18n="common.view">View</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="7" style="font-weight:700;text-align:center;" data-i18n="empty.no_matches">No matches yet.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const table = document.querySelector('.brutalist-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -30,9 +30,9 @@ namespace algotournament.Pages.Admin.Discussions
             Discussion = await _context.Discussions
                 .Include(d => d.Author)
                 .Include(d => d.Problem)
-                .FirstOrDefaultAsync(d => d.Id == id) ?? new Discussion();
+                .FirstOrDefaultAsync(d => d.Id == id);
 
-            if (Discussion.Id == 0)
+            if (Discussion == null)
             {
                 return NotFound();
             }
@@ -47,14 +47,32 @@ namespace algotournament.Pages.Admin.Discussions
                 return NotFound();
             }
 
-            Discussion = await _context.Discussions.FindAsync(id) ?? new Discussion();
-            if (Discussion.Id != 0)
+            var discussion = await _context.Discussions
+                .Include(d => d.Replies)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (discussion == null)
             {
-                _context.Discussions.Remove(Discussion);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            try
+            {
+                _context.DiscussionReplies.RemoveRange(discussion.Replies);
+                _context.Discussions.Remove(discussion);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Could not delete discussion: {ex.Message}";
+                Discussion = await _context.Discussions
+                    .Include(d => d.Author)
+                    .Include(d => d.Problem)
+                    .FirstOrDefaultAsync(d => d.Id == id) ?? new Discussion();
+                return Page();
+            }
         }
     }
 }

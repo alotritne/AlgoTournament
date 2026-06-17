@@ -7,7 +7,14 @@
 <main class="container">
     <div class="auth-container">
         <h1 class="auth-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="auth.login">auth::login</span></h1>
-        
+
+        @if (Request.Query["banned"] == "1")
+        {
+            <div class="alert alert-danger" style="margin-bottom: 1rem;">
+                <span data-i18n="auth.account_banned">Your account has been locked. Please contact an administrator.</span>
+            </div>
+        }
+
         <form method="post">
             <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 1rem;"></div>
             
@@ -37,7 +44,6 @@
 
         <div class="auth-footer">
             <p><span data-i18n="auth.dont_have_account">Don't have an account?</span> <a asp-page="./Register" data-i18n="auth.register_here">Register here</a>.</p>
-            <p><a asp-page="./ForgotPassword" data-i18n="auth.forgot_password">Forgot your password?</a></p>
         </div>
     </div>
 </main>

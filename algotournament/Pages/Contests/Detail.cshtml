@@ -11,7 +11,7 @@
     
     @if (Model.Contest != null)
     {
-        <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; color: var(--accent-color); color: var(--bg-color);">
+        <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; color: var(--accent-color); color: var(--bg-color);" id="countdownTimer">
             @Model.GetTimeRemaining()
         </div>
         <p style="font-size: 1.2rem; font-weight: 700; max-width: 600px; margin: 0 auto 2rem; color: var(--bg-color);">
@@ -128,6 +128,40 @@
         </section>
     </aside>
 </div>
+
+@section Scripts {
+    <script>
+        const startTime = new Date('@Model.Contest?.StartTime.ToString("o")');
+        const endTime = new Date('@Model.Contest?.EndTime.ToString("o")');
+
+        function updateCountdown() {
+            const now = new Date();
+            let timeString = '';
+
+            if (now < startTime) {
+                const timeUntilStart = startTime - now;
+                const hours = Math.floor(timeUntilStart / (1000 * 60 * 60));
+                const minutes = Math.floor((timeUntilStart % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeUntilStart % (1000 * 60)) / 1000);
+                timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else if (now <= endTime) {
+                const timeUntilEnd = endTime - now;
+                const hours = Math.floor(timeUntilEnd / (1000 * 60 * 60));
+                const minutes = Math.floor((timeUntilEnd % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeUntilEnd % (1000 * 60)) / 1000);
+                timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+                timeString = 'Contest Ended';
+            }
+
+            document.getElementById('countdownTimer').textContent = timeString;
+        }
+
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+    </script>
+}
 
 @functions {
     string GetDifficultyClass(int rating)

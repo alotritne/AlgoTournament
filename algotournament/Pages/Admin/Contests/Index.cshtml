@@ -12,8 +12,12 @@
         <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_new_contest">Create New Contest</a>
     </div>
 
+    <div class="admin-search-bar" style="margin-bottom: 1rem;">
+        <input type="text" id="contestSearch" class="brutalist-input" style="width: 100%;" placeholder="Search contests..." data-i18n-placeholder="admin.search_contests_placeholder" onkeyup="filterContests()" />
+    </div>
+
     <div class="admin-table-wrapper">
-        <table class="table admin-table">
+        <table class="table admin-table" id="contestsTable">
             <thead>
                 <tr>
                     <th data-i18n="admin.id">ID</th>
@@ -28,10 +32,10 @@
                     <th data-i18n="admin.actions">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="contestsTableBody">
                 @foreach (var contest in Model.Contests)
                 {
-                    <tr>
+                    <tr data-id="@contest.Id">
                         <td>@contest.Id</td>
                         <td>@contest.Name</td>
                         <td>@contest.Tournament?.Name</td>
@@ -51,3 +55,29 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function filterContests() {
+            const input = document.getElementById('contestSearch');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('contestsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const textValue = cells[j].textContent || cells[j].innerText;
+                        if (textValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+}

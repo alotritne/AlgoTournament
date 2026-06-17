@@ -30,65 +30,81 @@ namespace algotournament.Pages.Admin.Discussions
                 return NotFound();
             }
 
-            Discussion = await _context.Discussions.FindAsync(id) ?? new Discussion();
-            if (Discussion.Id == 0)
+            var discussion = await _context.Discussions.FindAsync(id);
+            if (discussion == null)
             {
                 return NotFound();
             }
 
-            var problems = await _context.Problems
-                .Where(p => p.IsPublic)
-                .Select(p => new { p.Id, p.TitleVi })
-                .ToListAsync();
-
-            Problems = new SelectList(problems, "Id", "Title", Discussion.ProblemId);
-
+            Discussion = discussion;
+            await LoadProblemsAsync();
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                var problems = await _context.Problems
-                    .Where(p => p.IsPublic)
-                    .Select(p => new { p.Id, p.TitleVi })
-                    .ToListAsync();
-
-                Problems = new SelectList(problems, "Id", "Title", Discussion.ProblemId);
-                return Page();
+                return NotFound();
             }
 
-            var existing = await _context.Discussions.AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Id == Discussion.Id);
+            var existing = await _context.Discussions.FindAsync(id);
             if (existing == null)
             {
                 return NotFound();
             }
 
-            Discussion.AuthorId = existing.AuthorId;
-            Discussion.CreatedAt = existing.CreatedAt;
-            Discussion.ReplyCount = existing.ReplyCount;
-            Discussion.ViewCount = existing.ViewCount;
-            Discussion.UpdatedAt = DateTime.UtcNow;
-
-            _context.Attach(Discussion).State = EntityState.Modified;
-
-            try
+            // Validate ProblemId if not null
+            if (Discussion.ProblemId.HasValue)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _context.Discussions.AnyAsync(d => d.Id == Discussion.Id))
+                var problemExists = await _context.Problems.AnyAsync(p => p.Id == Discussion.ProblemId.Value);
+                if (!problemExists)
                 {
-                    return NotFound();
+                    ModelState.AddModelError("Discussion.ProblemId", "Selected problem does not exist.");
+                    await LoadProblemsAsync();
+                    Discussion = existing;
+                    return Page();
                 }
-
-                throw;
             }
 
-            return RedirectToPage("./Index");
+            if (await TryUpdateModelAsync(
+                existing,
+                "Discussion",
+                d => d.Title, d => d.Content, d => d.ProblemId))
+            {
+                try
+                {
+                    existing.UpdatedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _context.Discussions.AnyAsync(d => d.Id == existing.Id))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Could not save discussion: {ex.Message}";
+                }
+            }
+
+            await LoadProblemsAsync();
+            Discussion = existing;
+            return Page();
+        }
+
+        private async Task LoadProblemsAsync()
+        {
+            var problems = await _context.Problems
+                .Where(p => p.IsPublic)
+                .OrderBy(p => p.TitleVi)
+                .Select(p => new { p.Id, p.TitleVi })
+                .ToListAsync();
+            Problems = new SelectList(problems, "Id", "TitleVi", Discussion.ProblemId);
         }
     }
 }

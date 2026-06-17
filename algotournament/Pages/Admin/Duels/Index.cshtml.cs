@@ -32,21 +32,21 @@ namespace algotournament.Pages.Admin.Duels
                 .Include(m => m.Room)
                     .ThenInclude(r => r.Problem)
                 .OrderByDescending(m => m.StartedAt)
-                .Take(50)
+                .Take(5)
                 .ToListAsync();
 
             Rooms = await _context.DuelRooms
                 .Include(r => r.Problem)
                 .Include(r => r.HostUser)
                 .OrderByDescending(r => r.CreatedAt)
-                .Take(50)
+                .Take(5)
                 .ToListAsync();
 
             Participants = await _context.DuelParticipants
                 .Include(p => p.User)
                 .Include(p => p.Room)
                 .OrderByDescending(p => p.JoinedAt)
-                .Take(50)
+                .Take(5)
                 .ToListAsync();
         }
 

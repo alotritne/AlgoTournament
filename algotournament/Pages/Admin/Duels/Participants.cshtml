@@ -1,0 +1,65 @@
+@page
+@model algotournament.Pages.Admin.Duels.ParticipantsModel
+@{
+    ViewData["Title"] = "admin.duel_participants";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.participants">participants</span></h1>
+    <a asp-page="./Index" class="btn btn-secondary" style="margin-left: 1rem;" data-i18n="common.back">Back</a>
+</div>
+
+<div class="admin-search-bar" style="margin-bottom: 1rem;">
+    <input type="text" id="searchInput" class="brutalist-input" style="width: 100%;" placeholder="Search participants..." data-i18n-placeholder="common.search" />
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="duels.room">Room</th>
+                <th data-i18n="duels.player">Player</th>
+                <th data-i18n="duels.slot">Slot</th>
+                <th data-i18n="duels.ready">Ready</th>
+                <th data-i18n="dashboard.created_at">Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Participants)
+            {
+                <tr>
+                    <td>@p.Room.RoomCode</td>
+                    <td>@p.User.Handle</td>
+                    <td>@p.SlotIndex</td>
+                    <td data-i18n="@(p.IsReady ? "admin.yes" : "admin.no")">@(p.IsReady ? "Yes" : "No")</td>
+                    <td>@p.JoinedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const table = document.querySelector('.brutalist-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

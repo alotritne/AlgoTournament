@@ -10,8 +10,10 @@ namespace algotournament.Models
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public bool IsPublished { get; set; } = true;
-        
+
         // Navigation properties
+        [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
+        [Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ValidateNever]
         public virtual ApplicationUser Author { get; set; } = null!;
     }
 }

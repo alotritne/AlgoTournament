@@ -169,7 +169,38 @@ document.addEventListener("DOMContentLoaded", async () => {
           data.redirectUrl || `/Duels/Result/${data.matchId}`;
       }, 1500);
     });
+
+    window.DuelHubClient.onReconnect(async () => {
+      // After re-joining room group, force a state refresh so the page reflects
+      // any match events that were missed while the connection was down.
+      await pollMatchState();
+    });
   }
+
+  // Fallback polling: if SignalR broadcasts are missed (e.g. transient
+  // disconnect, server restart) we still detect match end / updates by
+  // polling the page handler every 3s.
+  async function pollMatchState() {
+    if (matchEnded) return;
+    try {
+      const res = await fetch(
+        window.location.pathname + '?handler=State',
+        { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+      );
+      if (!res.ok) return;
+      const state = await res.json();
+      if (!state || state.status === undefined || state.status === null) return;
+      // DuelMatchStatus enum: 0 = InProgress, 1 = Finished, 2 = Cancelled, 3 = ForceEnded
+      if (state.status !== 0) {
+        const redirectUrl = `/Duels/Result/${state.matchId}`;
+        showMatchEndOverlay('MATCH ENDED', 'Redirecting...');
+        setTimeout(() => { window.location.href = redirectUrl; }, 800);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+  setInterval(pollMatchState, 3000);
 
   if (submitForm) {
     submitForm.addEventListener("submit", async (e) => {

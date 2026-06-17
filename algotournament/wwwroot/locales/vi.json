@@ -15,7 +15,8 @@
     "admin": "Quản Trị",
     "register": "Đăng Ký",
     "submissions": "Bài Nộp",
-    "profile": "Hồ Sơ"
+    "profile": "Hồ Sơ",
+    "contact": "Liên Hệ"
   },
   "home": {
     "hero_title": "Lập Trình. Thi Đấu. Chinh Phục.",
@@ -158,10 +159,12 @@
   "admin": {
     "title": "Quản Trị",
     "dashboard": "Bảng Điều Khiển",
+    "seasons": "Mùa Giải",
     "overview": "Tổng Quan",
     "manage_problems": "Quản Lý Bài Toán",
     "manage_contests": "Quản Lý Cuộc Thi",
     "manage_tournaments": "Quản Lý Giải Đấu",
+    "manage_seasons": "Quản Lý Mùa Giải",
     "manage_users": "Quản Lý Người Dùng",
     "manage_submissions": "Quản Lý Bài Nộp",
     "manage_discussions": "Quản Lý Thảo Luận",
@@ -172,6 +175,8 @@
     "expires_at": "Hết Hạn",
     "expires_at_optional": "Hết Hạn (Tùy Chọn)",
     "is_active": "Đang Hoạt Động",
+    "start_date": "Ngày Bắt Đầu",
+    "end_date": "Ngày Kết Thúc",
     "contest_optional": "Cuộc Thi (Tùy Chọn)",
     "global_announcement": "-- Thông Báo Toàn Cầu --",
     "related_problem": "Bài Toán Liên Quan (Tùy Chọn)",
@@ -179,13 +184,16 @@
     "create_problem": "Tạo Bài Toán",
     "create_test_case": "Tạo Test Case",
     "create_tournament": "Tạo Giải Đấu",
+    "create_season": "Tạo Mùa Giải",
     "create_announcement": "Tạo Thông Báo",
     "edit_problem": "Sửa Bài Toán",
     "edit_user": "Sửa Người Dùng",
     "edit_tournament": "Sửa Giải Đấu",
+    "edit_season": "Sửa Mùa Giải",
     "delete_problem": "Xóa Bài Toán",
     "delete_contest": "Xóa Cuộc Thi",
     "delete_tournament": "Xóa Giải Đấu",
+    "delete_season": "Xóa Mùa Giải",
     "delete_announcement": "Xóa Thông Báo",
     "delete_blog_post": "Xóa Bài Viết Blog",
     "delete_discussion": "Xóa Thảo Luận",
@@ -270,6 +278,8 @@
     "delete_contest_warning": "Hành động này không thể hoàn tác. Tất cả người tham gia và bài nộp liên quan cũng sẽ bị xóa.",
     "delete_tournament_confirmation": "Bạn có chắc chắn muốn xóa giải đấu này?",
     "delete_tournament_warning": "Hành động này không thể hoàn tác. Tất cả cuộc thi liên quan cũng sẽ bị xóa.",
+    "delete_season_confirmation": "Bạn có chắc chắn muốn xóa mùa giải này?",
+    "delete_season_warning": "Hành động này không thể hoàn tác. Tất cả giải đấu liên quan cũng sẽ bị xóa.",
     "delete_problem_confirmation": "Bạn có chắc chắn muốn xóa bài toán này?",
     "delete_problem_warning": "Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan cũng sẽ bị xóa:",
     "delete_test_case_confirmation": "Bạn có chắc chắn muốn xóa test case này?",
@@ -514,5 +524,24 @@
     "email_invalid": "Địa chỉ email không hợp lệ",
     "password_min_length": "Mật khẩu phải có ít nhất 6 ký tự",
     "passwords_not_match": "Mật khẩu không khớp"
+  },
+  "banned": {
+    "title": "Tài Khoản Bị Khóa",
+    "message": "Tài khoản của bạn đã bị khóa khỏi nền tảng.",
+    "reason_label": "Lý do:",
+    "contact_message": "Nếu bạn cho rằng đây là sự nhầm lẫn hoặc muốn khiếu nại việc khóa, vui lòng liên hệ với quản trị viên:",
+    "back_home": "Về Trang Chủ"
+  },
+  "error": {
+    "page_not_found": "Không Tìm Thấy Trang",
+    "page_not_found_message": "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.",
+    "back_home": "Về Trang Chủ"
+  },
+  "contact": {
+    "title": "Liên Hệ Quản Trị Viên",
+    "message": "Nếu bạn có bất kỳ câu hỏi, vấn đề hoặc cần hỗ trợ, vui lòng liên hệ với quản trị viên:",
+    "email": "Email:",
+    "facebook": "Facebook:",
+    "back_home": "Về Trang Chủ"
   }
 }

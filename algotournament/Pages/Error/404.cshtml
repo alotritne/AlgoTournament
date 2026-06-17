@@ -1,0 +1,26 @@
+@page
+@model Error404Model
+@{
+    ViewData["Title"] = "error.not_found";
+    Response.StatusCode = 404;
+}
+
+<main class="container">
+    <div class="auth-container" style="text-align: center;">
+        <div style="font-size: 8rem; font-weight: bold; color: #dc3545; margin: 2rem 0;">
+            404
+        </div>
+        
+        <h1 class="auth-title" style="margin-bottom: 1rem;">
+            <span class="prompt-symbol">&gt;</span> <span data-i18n="error.page_not_found">Page Not Found</span>
+        </h1>
+        
+        <p style="margin-bottom: 2rem; color: #6c757d;" data-i18n="error.page_not_found_message">
+            The page you are looking for does not exist or has been moved.
+        </p>
+        
+        <div style="margin-top: 2rem;">
+            <a href="/" class="btn btn-primary" data-i18n="error.back_home">Back to Home</a>
+        </div>
+    </div>
+</main>

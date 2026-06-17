@@ -35,11 +35,30 @@ namespace algotournament.Pages.Admin.TestCases
                 return Page();
             }
 
-            TestCase.CreatedAt = DateTime.UtcNow;
-            _context.TestCases.Add(TestCase);
-            await _context.SaveChangesAsync();
+            // Validate ProblemId exists
+            var problemExists = await _context.Problems.AnyAsync(p => p.Id == TestCase.ProblemId);
+            if (!problemExists)
+            {
+                ModelState.AddModelError("TestCase.ProblemId", "Problem does not exist.");
+                Problem = await _context.Problems.FindAsync(TestCase.ProblemId);
+                return Page();
+            }
 
-            return RedirectToPage("./Index", new { problemId = TestCase.ProblemId });
+            TestCase.CreatedAt = DateTime.UtcNow;
+            TestCase.Problem = null; // Prevent navigation property validation issue
+            _context.TestCases.Add(TestCase);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index", new { problemId = TestCase.ProblemId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Could not save test case: {ex.Message}");
+                Problem = await _context.Problems.FindAsync(TestCase.ProblemId);
+                return Page();
+            }
         }
     }
 }

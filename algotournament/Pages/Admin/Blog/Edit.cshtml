@@ -4,6 +4,8 @@
     ViewData["Title"] = "admin.edit_blog_post";
 }
 
+@await Html.PartialAsync("_AdminNavbar")
+
 <div class="container mt-4">
     <div class="admin-header">
         <h1 data-i18n="admin.edit_blog_post">Edit Blog Post</h1>
@@ -11,6 +13,7 @@
 
     <div class="admin-form-container">
         <form method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BlogPost.Id" />
 

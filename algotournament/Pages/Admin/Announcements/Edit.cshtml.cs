@@ -20,7 +20,7 @@ namespace algotournament.Pages.Admin.Announcements
 
         [BindProperty]
         public Announcement Announcement { get; set; } = new();
-        
+
         public SelectList Contests { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -30,47 +30,77 @@ namespace algotournament.Pages.Admin.Announcements
                 return NotFound();
             }
 
-            Announcement = await _context.Announcements.FindAsync(id);
-
-            if (Announcement == null)
+            var announcement = await _context.Announcements.FindAsync(id);
+            if (announcement == null)
             {
                 return NotFound();
             }
 
-            var contests = await _context.Contests.OrderBy(c => c.Name).ToListAsync();
-            Contests = new SelectList(contests, "Id", "Name", Announcement.ContestId);
-
+            Announcement = announcement;
+            await LoadContestsAsync();
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                var contests = await _context.Contests.OrderBy(c => c.Name).ToListAsync();
-                Contests = new SelectList(contests, "Id", "Name", Announcement.ContestId);
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Announcement).State = EntityState.Modified;
-
-            try
+            var existing = await _context.Announcements.FindAsync(id);
+            if (existing == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+
+            // Validate ContestId if not null
+            if (Announcement.ContestId.HasValue)
             {
-                if (!_context.Announcements.Any(e => e.Id == Announcement.Id))
+                var contestExists = await _context.Contests.AnyAsync(c => c.Id == Announcement.ContestId.Value);
+                if (!contestExists)
                 {
-                    return NotFound();
+                    ModelState.AddModelError("Announcement.ContestId", "Selected contest does not exist.");
+                    await LoadContestsAsync();
+                    Announcement = existing;
+                    return Page();
                 }
-                else
+            }
+
+            if (await TryUpdateModelAsync(
+                existing,
+                "Announcement",
+                a => a.Title, a => a.Content, a => a.ContestId,
+                a => a.ExpiresAt, a => a.IsActive, a => a.IsGlobal))
+            {
+                try
                 {
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _context.Announcements.AnyAsync(a => a.Id == existing.Id))
+                    {
+                        return NotFound();
+                    }
                     throw;
                 }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Could not save announcement: {ex.Message}";
+                }
             }
 
-            return RedirectToPage("./Index");
+            await LoadContestsAsync();
+            Announcement = existing;
+            return Page();
+        }
+
+        private async Task LoadContestsAsync()
+        {
+            var contests = await _context.Contests.OrderBy(c => c.Name).ToListAsync();
+            Contests = new SelectList(contests, "Id", "Name", Announcement.ContestId);
         }
     }
 }

@@ -47,15 +47,33 @@ namespace algotournament.Pages.Admin.Contests
                 return NotFound();
             }
 
-            Contest = await _context.Contests.FindAsync(id);
+            var contest = await _context.Contests
+                .Include(c => c.ContestProblems)
+                .Include(c => c.Participants)
+                .Include(c => c.Submissions)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Contest != null)
+            if (contest == null)
             {
-                _context.Contests.Remove(Contest);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            try
+            {
+                _context.Submissions.RemoveRange(contest.Submissions);
+                _context.ContestParticipants.RemoveRange(contest.Participants);
+                _context.ContestProblems.RemoveRange(contest.ContestProblems);
+                _context.Contests.Remove(contest);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Could not delete contest: {ex.Message}";
+                Contest = contest;
+                return Page();
+            }
         }
     }
 }

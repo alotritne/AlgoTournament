@@ -47,15 +47,28 @@ namespace algotournament.Pages.Admin.Announcements
                 return NotFound();
             }
 
-            Announcement = await _context.Announcements.FindAsync(id);
-
-            if (Announcement != null)
+            var announcement = await _context.Announcements.FindAsync(id);
+            if (announcement == null)
             {
-                _context.Announcements.Remove(Announcement);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            try
+            {
+                _context.Announcements.Remove(announcement);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Could not delete announcement: {ex.Message}";
+                Announcement = await _context.Announcements
+                    .Include(a => a.Creator)
+                    .Include(a => a.Contest)
+                    .FirstOrDefaultAsync(m => m.Id == id) ?? new Announcement();
+                return Page();
+            }
         }
     }
 }
