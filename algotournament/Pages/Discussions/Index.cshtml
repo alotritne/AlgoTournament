@@ -1,0 +1,46 @@
+@page
+@model algotournament.Pages.Discussions.IndexModel
+@{
+    ViewData["Title"] = "nav.discussions";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="nav.discussions">discussions</span></h1>
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="discussion.title">Title</th>
+                <th data-i18n="discussion.author">Author</th>
+                <th data-i18n="discussion.replies">Replies</th>
+                <th data-i18n="discussion.views">Views</th>
+                <th data-i18n="discussion.last_activity">Last Activity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Discussions.Any())
+            {
+                @foreach (var discussion in Model.Discussions)
+                {
+                    <tr>
+                        <td>
+                            <a asp-page="Detail" asp-route-id="@discussion.Id" style="font-weight: 700;">@discussion.Title</a>
+                        </td>
+                        <td>@discussion.Author?.Handle</td>
+                        <td>@discussion.ReplyCount</td>
+                        <td>@discussion.ViewCount</td>
+                        <td>@discussion.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="font-weight: 700; text-align: center;" data-i18n="empty.no_discussions_yet">No discussions yet. Be the first to start one!</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

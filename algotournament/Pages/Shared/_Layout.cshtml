@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - ALGO.TOURNAMENT 2.0</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/variables.css">
+    <link rel="stylesheet" href="~/css/base.css">
+    <link rel="stylesheet" href="~/css/layout.css">
+    <link rel="stylesheet" href="~/css/components.css">
+    <link rel="stylesheet" href="~/css/pages.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <link rel="stylesheet" href="~/css/duel.css">
+    <link rel="stylesheet" href="~/css/vscode-editor.css">
+    <link rel="stylesheet" href="~/css/language-switcher.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    @await Html.PartialAsync("_HeadMeta")
+</head>
+<body>
+
+    @await Html.PartialAsync("_Navbar")
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    @await Html.PartialAsync("_Footer")
+
+    <script src="~/js/i18n.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/main.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for i18n to be ready
+            const checkI18n = setInterval(() => {
+                if (typeof i18n !== 'undefined' && document.documentElement.classList.contains('i18n-ready')) {
+                    clearInterval(checkI18n);
+                    // Update page title after i18n is loaded
+                    const originalTitle = document.title;
+                    const titleKey = originalTitle.split(' - ')[0];
+                    if (titleKey.includes('.')) {
+                        const translatedTitle = i18n.t(titleKey);
+                        document.title = translatedTitle + ' - ALGO.TOURNAMENT 2.0';
+                    }
+                }
+            }, 100);
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

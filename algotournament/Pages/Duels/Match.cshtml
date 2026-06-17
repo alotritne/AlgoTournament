@@ -1,0 +1,116 @@
+@page "{roomCode}"
+@model algotournament.Pages.Duels.MatchModel
+@{
+    ViewData["Title"] = "Duel Match";
+}
+
+@if (Model.Problem != null && Model.MatchState != null)
+{
+    <div class="duel-match-timer" id="matchTimerBar"
+         data-started-at="@Model.MatchState.StartedAt.ToUniversalTime().ToString("o")"
+         data-ends-at="@Model.MatchState.EndsAt.ToUniversalTime().ToString("o")"
+         data-duration-minutes="@Model.MatchState.DurationMinutes"
+         data-match-id="@Model.MatchState.MatchId">
+        <div class="duel-timer-item">
+            <span class="duel-timer-label">TIME</span>
+            <span class="duel-timer-value" id="timeRemaining">--:--</span>
+        </div>
+        <div class="duel-timer-item">
+            <span class="duel-timer-label">YOU</span>
+            <span class="duel-timer-value" id="myStatus">@(Model.MatchState.MyLastStatus ?? "—")</span>
+        </div>
+        <div class="duel-timer-item">
+            <span class="duel-timer-label">OPPONENT</span>
+            <span class="duel-timer-value" id="opponentStatus">@(Model.MatchState.OpponentLastStatus ?? "—")</span>
+        </div>
+        <div class="duel-timer-item">
+            <span class="duel-timer-label">SUBMISSIONS</span>
+            <span class="duel-timer-value"><span id="mySubCount">@Model.MatchState.MySubmissionCount</span> / <span id="oppSubCount">@Model.MatchState.OpponentSubmissionCount</span></span>
+        </div>
+    </div>
+
+    <div class="duel-match-layout">
+        <section class="duel-panel duel-statement">
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> @Model.Problem.TitleVi</h2>
+            <div class="constraints" style="margin-bottom: 1.5rem; font-weight: 700; border-bottom: 2px dashed var(--text-color); padding-bottom: 1rem;">
+                <p>Time limit: @(Model.Problem.TimeLimitMs / 1000.0)s | Memory: @Model.Problem.MemoryLimitMB MB</p>
+            </div>
+            <div class="problem-content">@Html.Raw(Model.RenderMarkdown(Model.Problem.StatementVi))</div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Problem.SampleInput) || Model.SampleTestCases.Any())
+            {
+                <h3 style="margin: 1.5rem 0 0.75rem; font-weight: 800;">Samples</h3>
+                @if (Model.SampleTestCases.Any())
+                {
+                    @foreach (var sample in Model.SampleTestCases)
+                    {
+                        <div class="duel-sample-block">
+                            <strong>Input</strong>
+                            <pre class="duel-code-block">@sample.Input</pre>
+                            <strong>Output</strong>
+                            <pre class="duel-code-block">@sample.ExpectedOutput</pre>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <pre class="duel-code-block">@Model.Problem.SampleInput</pre>
+                    <pre class="duel-code-block">@Model.Problem.SampleOutput</pre>
+                }
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Problem.ConstraintsVi))
+            {
+                <h3 style="margin: 1.5rem 0 0.75rem; font-weight: 800;">Constraints</h3>
+                <div>@Html.Raw(Model.RenderMarkdown(Model.Problem.ConstraintsVi))</div>
+            }
+        </section>
+
+        <section class="duel-panel duel-editor-panel">
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> code editor</h2>
+            <form id="duelSubmitForm">
+                @Html.AntiForgeryToken()
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="language" style="font-weight: 700;">Language</label>
+                    <select id="language" name="Input.Language" class="brutalist-input">
+                        <option value="Cpp17">C++17</option>
+                        <option value="Cpp20" selected>C++20</option>
+                    </select>
+                </div>
+                <div class="monaco-editor-wrapper" data-monaco-textarea="sourceCode" data-monaco-mode="cpp" data-monaco-autosave-key="duel-@Model.MatchState?.MatchId" data-monaco-label="Duel Code" style="min-height: 420px;">
+                    <textarea id="sourceCode" name="Input.SourceCode" spellcheck="false" placeholder="// Write your solution here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn" style="margin-top: 1rem;">Submit</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="duel-panel duel-submission-feed">
+        <h3 class="section-title"><span class="prompt-symbol">&gt;</span> submission feed</h3>
+        <ul class="duel-feed-list" id="submissionFeed"></ul>
+    </section>
+
+    <div class="duel-match-end-overlay" id="matchEndOverlay" hidden>
+        <div class="duel-match-end-box">
+            <h2 id="matchEndTitle">MATCH ENDED</h2>
+            <p id="matchEndMessage">Redirecting...</p>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        window.duelMatchConfig = {
+            roomCode: '@Model.MatchState?.RoomCode',
+            matchId: @Model.MatchState?.MatchId,
+            currentUserId: '@Model.CurrentUserId',
+            hubUrl: '/hubs/duel',
+            submitUrl: '?handler=Submit'
+        };
+    </script>
+    <script src="~/js/vscode-editor.js" asp-append-version="true"></script>
+    <script src="~/js/duel/common.js" asp-append-version="true"></script>
+    <script src="~/js/duel/duel-hub.js" asp-append-version="true"></script>
+    <script src="~/js/duel/match.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,40 @@
+@page
+@model algotournament.Pages.Admin.Discussions.DeleteModel
+@{
+    ViewData["Title"] = "admin.delete_discussion";
+}
+
+<div class="container mt-4">
+    <h1 data-i18n="admin.delete_discussion">Delete Discussion</h1>
+
+    <div class="alert alert-danger">
+        <h3 data-i18n="admin.delete_discussion_confirmation">Are you sure you want to delete this discussion?</h3>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3" data-i18n="admin.id">ID</dt>
+                <dd class="col-sm-9">@Model.Discussion.Id</dd>
+
+                <dt class="col-sm-3" data-i18n="discussion.title">Title</dt>
+                <dd class="col-sm-9">@Model.Discussion.Title</dd>
+
+                <dt class="col-sm-3" data-i18n="discussion.author">Author</dt>
+                <dd class="col-sm-9">@Model.Discussion.Author?.Handle</dd>
+
+                <dt class="col-sm-3" data-i18n="admin.related_problem">Problem</dt>
+                <dd class="col-sm-9">@(Model.Discussion.Problem?.TitleVi ?? "-")</dd>
+
+                <dt class="col-sm-3" data-i18n="discussion.replies">Replies</dt>
+                <dd class="col-sm-9">@Model.Discussion.ReplyCount</dd>
+            </dl>
+
+            <form method="post">
+                <input type="hidden" asp-for="Discussion.Id" />
+                <input type="submit" value="Delete" class="btn btn-danger" data-i18n="common.delete" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

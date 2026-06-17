@@ -1,0 +1,151 @@
+@page
+@model ProfileModel
+@using algotournament.Models
+@{
+    ViewData["Title"] = "dashboard.profile";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> @Model.ProfileUser?.Handle</h1>
+</div>
+
+<div class="layout-grid" style="grid-template-columns: 1fr 3fr;">
+
+    <!-- Sidebar: User Info -->
+    <aside class="sidebar" style="display: flex; flex-direction: column; gap: 2rem;">
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.info">info</span></h3>
+            <div style="padding: 1.5rem;">
+                <div style="font-size: 3rem; font-weight: 800; color: var(--accent-color); text-align: center; margin-bottom: 1rem;">@Model.ProfileUser?.Rating</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-weight: 700;">
+                    <div data-i18n="dashboard.rank">Rank:</div>
+                    <div>@Model.Rank</div>
+                    <div data-i18n="problems.title">Problems:</div>
+                    <div>@Model.ProfileUser?.ProblemsSolved</div>
+                    <div data-i18n="dashboard.contests">Contests:</div>
+                    <div>@Model.ProfileUser?.ContestsParticipated</div>
+                </div>
+            </div>
+        </section>
+        
+        @if (Model.IsCurrentUser)
+        {
+            <section class="sidebar-card">
+                <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.actions">actions</span></h3>
+                <div style="padding: 1rem;">
+                    <a asp-page="/Account/EditProfile" class="btn btn-secondary btn-block" style="margin-bottom: 0.5rem;" data-i18n="dashboard.edit_profile">Edit Profile</a>
+                    <a asp-page="/Account/ChangePassword" class="btn btn-secondary btn-block" data-i18n="dashboard.change_password">Change Password</a>
+                </div>
+            </section>
+        }
+    </aside>
+
+    <!-- Main Content: Stats -->
+    <div class="main-column">
+        <section style="margin-bottom: 3rem;">
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.solved_problems">solved problems</span></h2>
+            @if (Model.SolvedProblems != null && Model.SolvedProblems.Count > 0)
+            {
+                <div class="table-container">
+                    <table class="brutalist-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th data-i18n="dashboard.name">Name</th>
+                                <th data-i18n="problems.difficulty">Difficulty</th>
+                                <th data-i18n="dashboard.solved_at">Solved At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var problem in Model.SolvedProblems)
+                            {
+                                <tr>
+                                    <td>@problem.Id</td>
+                                    <td><a asp-page="/Problems/Detail" asp-route-id="@problem.Id" style="font-weight: 700;">@problem.GetTitle(currentLanguage)</a></td>
+                                    <td class="@GetDifficultyClass(problem.DifficultyRating)">@problem.DifficultyRating</td>
+                                    <td>@(Model.SolvedDates.TryGetValue(problem.Id, out var solvedDate) ? solvedDate.ToString("MM/dd/yyyy") : "N/A")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p style="font-weight: 700;" data-i18n="dashboard.no_problems_solved_yet">No problems solved yet.</p>
+            }
+        </section>
+
+        <section>
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.recent_submissions">recent submissions</span></h2>
+            @if (Model.RecentSubmissions != null && Model.RecentSubmissions.Count > 0)
+            {
+                <table class="brutalist-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="dashboard.time">Time</th>
+                            <th data-i18n="dashboard.problem">Problem</th>
+                            <th data-i18n="dashboard.lang">Lang</th>
+                            <th data-i18n="dashboard.verdict">Verdict</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var submission in Model.RecentSubmissions)
+                        {
+                            <tr>
+                                <td>@Html.Raw(TimeAgo(submission.SubmittedAt))</td>
+                                <td><a asp-page="/Problems/Detail" asp-route-id="@submission.ProblemId">@(submission.Problem?.TitleVi ?? "Problem #" + submission.ProblemId)</a></td>
+                                <td>@submission.Language.ToString().Replace("Cpp", "C++")</td>
+                                <td style="color: @GetVerdictColor(submission.Status); font-weight: 800;">@submission.Status.ToString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p style="font-weight: 700;" data-i18n="dashboard.no_submissions_yet">No submissions yet.</p>
+            }
+        </section>
+    </div>
+</div>
+
+@functions {
+    string GetDifficultyClass(int rating)
+    {
+        return rating switch
+        {
+            < 1200 => "diff-easy",
+            < 1600 => "diff-easy",
+            < 1900 => "diff-medium",
+            < 2100 => "diff-medium",
+            < 2400 => "diff-hard",
+            _ => "diff-hard"
+        };
+    }
+
+    string GetVerdictColor(SubmissionStatus status)
+    {
+        return status switch
+        {
+            SubmissionStatus.Accepted => "#228b22",
+            SubmissionStatus.WrongAnswer => "red",
+            SubmissionStatus.CompilationError => "orange",
+            SubmissionStatus.RuntimeError => "orange",
+            SubmissionStatus.TimeLimitExceeded => "orange",
+            SubmissionStatus.MemoryLimitExceeded => "orange",
+            _ => "var(--text-color)"
+        };
+    }
+
+    string TimeAgo(DateTime dateTime)
+    {
+        var span = DateTime.UtcNow - dateTime;
+        if (span.TotalMinutes < 1) return "<span data-i18n=\"time.just_now\">just now</span>";
+        if (span.TotalMinutes < 60) return $"<span data-i18n=\"time.mins_ago\" data-number=\"{(int)span.TotalMinutes}\">just now</span>";
+        if (span.TotalHours < 24) return $"<span data-i18n=\"time.hours_ago\" data-number=\"{(int)span.TotalHours}\">just now</span>";
+        return $"<span data-i18n=\"time.days_ago\" data-number=\"{(int)span.TotalDays}\">just now</span>";
+    }
+}

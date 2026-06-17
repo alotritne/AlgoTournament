@@ -1,0 +1,85 @@
+@page "{roomCode}"
+@model algotournament.Pages.Duels.LobbyModel
+@{
+    ViewData["Title"] = "Duel Lobby";
+    var p1 = Model.Lobby?.Participants.FirstOrDefault(p => p.SlotIndex == 1);
+    var p2 = Model.Lobby?.Participants.FirstOrDefault(p => p.SlotIndex == 2);
+    var me = Model.Lobby?.Participants.FirstOrDefault(p => p.UserId == Model.CurrentUserId);
+    var isReady = me?.IsReady ?? false;
+}
+
+<div class="page-header duel-lobby-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> duel lobby</h1>
+    <button type="button" class="btn btn-secondary" id="copyRoomCodeBtn" data-room-code="@Model.Lobby?.RoomCode">Copy Room Code</button>
+</div>
+
+@if (Model.Lobby != null)
+{
+    <div class="duel-panel duel-lobby-meta">
+        <p><strong>ROOM CODE:</strong> <span class="duel-room-code-display" id="roomCodeDisplay">@Model.Lobby.RoomCode</span></p>
+        <p><strong>PROBLEM:</strong> @Model.Lobby.ProblemTitle</p>
+        <p><strong>DURATION:</strong> @Model.Lobby.DurationMinutes minutes</p>
+    </div>
+
+    <div class="duel-lobby-players">
+        <div class="duel-player-card" id="player1Card">
+            <div class="duel-player-slot">PLAYER 1</div>
+            @if (p1 != null)
+            {
+                <div class="duel-player-handle">@p1.Handle</div>
+                <div class="duel-player-rating">Rating: @p1.Rating</div>
+                <div class="duel-ready-status @(p1.IsReady ? "is-ready" : "")" data-user-id="@p1.UserId">
+                    <span class="duel-connected-dot"></span>
+                    @(p1.IsReady ? "READY" : "NOT READY")
+                </div>
+            }
+            else
+            {
+                <div class="duel-player-empty">Waiting for host...</div>
+            }
+        </div>
+
+        <div class="duel-vs">VS</div>
+
+        <div class="duel-player-card" id="player2Card">
+            <div class="duel-player-slot">PLAYER 2</div>
+            @if (p2 != null)
+            {
+                <div class="duel-player-handle">@p2.Handle</div>
+                <div class="duel-player-rating">Rating: @p2.Rating</div>
+                <div class="duel-ready-status @(p2.IsReady ? "is-ready" : "")" data-user-id="@p2.UserId">
+                    <span class="duel-connected-dot"></span>
+                    @(p2.IsReady ? "READY" : "NOT READY")
+                </div>
+            }
+            else
+            {
+                <div class="duel-player-empty">Waiting for opponent...</div>
+            }
+        </div>
+    </div>
+
+    <div class="duel-lobby-actions">
+        <button type="button" class="btn btn-primary @(isReady ? "duel-ready-active" : "")" id="readyBtn" data-ready="@isReady.ToString().ToLower()">
+            @(isReady ? "Unready" : "Ready")
+        </button>
+    </div>
+
+    <div class="duel-countdown-overlay" id="countdownOverlay" hidden>
+        <div class="duel-countdown-number" id="countdownNumber">3</div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        window.duelLobbyConfig = {
+            roomCode: '@Model.Lobby?.RoomCode',
+            currentUserId: '@Model.CurrentUserId',
+            hubUrl: '/hubs/duel'
+        };
+    </script>
+    <script src="~/js/duel/common.js" asp-append-version="true"></script>
+    <script src="~/js/duel/duel-hub.js" asp-append-version="true"></script>
+    <script src="~/js/duel/lobby.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,313 @@
+/* css/components.css */
+
+/* BUTTONS */
+.btn {
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.8rem 1.5rem;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+}
+
+.btn-secondary {
+    background-color: var(--bg-color);
+}
+
+.btn:active, .btn:hover {
+    box-shadow: 0 0 0 var(--text-color);
+    transform: translate(var(--shadow-offset), var(--shadow-offset));
+}
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.login-btn {
+    border: var(--border-width) solid var(--text-color);
+    padding: 0.3rem 1rem;
+    background-color: var(--accent-color);
+    box-shadow: 3px 3px 0 var(--text-color);
+    transition: all 0.1s ease-in-out;
+}
+
+.login-btn:hover {
+    box-shadow: 0 0 0 var(--text-color);
+    transform: translate(3px, 3px);
+    text-decoration: none !important;
+}
+
+/* BRUTALIST TABLES */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: var(--border-width) solid var(--text-color);
+    background-color: #fff;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    margin-bottom: 3rem;
+}
+
+.brutalist-table, .table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.brutalist-table th, .brutalist-table td, .table th, .table td {
+    padding: 1rem;
+    border-bottom: 2px solid var(--text-color);
+    border-right: 2px solid var(--text-color);
+}
+
+.brutalist-table th:last-child, .brutalist-table td:last-child, .table th:last-child, .table td:last-child {
+    border-right: none;
+}
+
+.brutalist-table tbody tr:last-child td, .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.brutalist-table th, .table th {
+    background-color: var(--accent-color);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.brutalist-table tbody tr, .table tbody tr {
+    transition: background-color 0.1s;
+}
+
+.brutalist-table tbody tr:hover, .table tbody tr:hover {
+    background-color: #e5dfd1;
+}
+
+/* BRUTALIST CARDS */
+.card {
+    border: var(--border-width) solid var(--text-color);
+    background-color: #fff;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+    overflow-x: auto;
+}
+
+.admin-table {
+    margin-bottom: 0;
+    min-width: 900px;
+}
+
+.admin-table-actions {
+    white-space: nowrap;
+}
+
+.admin-table-actions .btn {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    box-shadow: 2px 2px 0 var(--text-color);
+}
+
+/* BADGES AND TAGS */
+.badge {
+    padding: 0.2rem 0.5rem;
+    border: 2px solid var(--text-color);
+    text-transform: uppercase;
+}
+
+.badge-rated {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+.badge-unrated {
+    background-color: #fff;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.7rem;
+    border: 1px solid var(--text-color);
+    background: var(--bg-color);
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/* FORMS (INPUTS) */
+.form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.brutalist-input {
+    padding: 0.8rem;
+    border: 2px solid var(--text-color);
+    background-color: var(--bg-color);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-color);
+    outline: none;
+    transition: box-shadow 0.1s;
+}
+
+.brutalist-input:focus {
+    box-shadow: 4px 4px 0 var(--accent-color);
+    background-color: #fff;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+}
+
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--text-color);
+    background-color: #fff;
+    font-weight: 800;
+    transition: all 0.1s;
+}
+
+.page-link:hover, .page-link.active {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    border-bottom: var(--border-width) solid var(--text-color);
+    margin-bottom: 2rem;
+}
+.tab {
+    padding: 1rem 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-right: var(--border-width) solid var(--text-color);
+    border-top: var(--border-width) solid var(--text-color);
+    border-left: var(--border-width) solid var(--text-color);
+    margin-right: -var(--border-width);
+    background: #e5dfd1;
+    margin-bottom: -var(--border-width);
+}
+.tab.active {
+    background: #fff;
+    border-bottom: var(--border-width) solid #fff;
+}
+.tab:first-child {
+    margin-left: 0;
+}
+
+/* CONTEST CARD */
+.contest-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.contest-card {
+    display: flex;
+    border: var(--border-width) solid var(--text-color);
+    background-color: #fff;
+    box-shadow: 4px 4px 0 var(--text-color);
+    transition: transform 0.1s;
+}
+
+.contest-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--text-color);
+}
+
+.contest-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: var(--accent-color);
+    border-right: var(--border-width) solid var(--text-color);
+    font-weight: 800;
+}
+
+.contest-date .month {
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.contest-date .day {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.contest-details {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.contest-details h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.contest-details p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.contest-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.contest-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border-left: var(--border-width) solid var(--text-color);
+    background-color: #e5dfd1;
+}
+
+.link-action {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.link-action:hover {
+    color: var(--accent-color);
+}

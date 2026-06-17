@@ -1,0 +1,80 @@
+@page
+@model SubmissionsModel
+@using algotournament.Models
+@{
+    ViewData["Title"] = "dashboard.my_submissions";
+}
+
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div>
+            <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.my_submissions">my submissions</span></h1>
+            <div style="font-weight: 700;"><span data-i18n="dashboard.all_submissions_by">All submissions by</span> <span style="color: var(--accent-color);">@Model.CurrentUser?.Handle</span></div>
+        </div>
+        <a asp-page="/Account/Dashboard" class="btn btn-secondary" style="padding: 0.3rem 1rem; font-size: 0.8rem;" data-i18n="dashboard.back_to_dashboard">Back to Dashboard</a>
+    </div>
+</div>
+
+<section>
+    @if (Model.Submissions != null && Model.Submissions.Count > 0)
+    {
+        <div class="table-container">
+            <table class="brutalist-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th data-i18n="dashboard.time">Time</th>
+                        <th data-i18n="dashboard.problem">Problem</th>
+                        <th data-i18n="dashboard.lang">Lang</th>
+                        <th data-i18n="dashboard.verdict">Verdict</th>
+                        <th data-i18n="dashboard.runtime">Runtime</th>
+                        <th data-i18n="dashboard.memory">Memory</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var submission in Model.Submissions)
+                    {
+                        <tr>
+                            <td><a asp-page="/Submissions/Status" asp-route-id="@submission.Id" style="font-weight: 700;">@submission.Id</a></td>
+                            <td>@Html.Raw(TimeAgo(submission.SubmittedAt))</td>
+                            <td><a asp-page="/Problems/Detail" asp-route-id="@submission.ProblemId" style="font-weight: 700;">@(submission.Problem?.TitleVi ?? $"Problem #{submission.ProblemId}")</a></td>
+                            <td>@submission.Language.ToString().Replace("Cpp", "C++")</td>
+                            <td style="color: @GetVerdictColor(submission.Status); font-weight: 800;">@submission.Status.ToString()</td>
+                            <td>@(submission.ExecutionTimeMs > 0 ? $"{submission.ExecutionTimeMs} ms" : "-")</td>
+                            <td>@(submission.MemoryUsedKB > 0 ? $"{submission.MemoryUsedKB / 1024} KB" : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p style="font-weight: 700;" data-i18n="dashboard.no_submissions_yet">No submissions yet.</p>
+    }
+</section>
+
+@functions {
+    string GetVerdictColor(SubmissionStatus status)
+    {
+        return status switch
+        {
+            SubmissionStatus.Accepted => "#228b22",
+            SubmissionStatus.WrongAnswer => "red",
+            SubmissionStatus.CompilationError => "orange",
+            SubmissionStatus.RuntimeError => "orange",
+            SubmissionStatus.TimeLimitExceeded => "orange",
+            SubmissionStatus.MemoryLimitExceeded => "orange",
+            _ => "var(--text-color)"
+        };
+    }
+
+    string TimeAgo(DateTime dateTime)
+    {
+        var span = DateTime.UtcNow - dateTime;
+        if (span.TotalMinutes < 1) return "<span data-i18n=\"time.just_now\">just now</span>";
+        if (span.TotalMinutes < 60) return $"<span data-i18n=\"time.mins_ago\" data-number=\"{(int)span.TotalMinutes}\">just now</span>";
+        if (span.TotalHours < 24) return $"<span data-i18n=\"time.hours_ago\" data-number=\"{(int)span.TotalHours}\">just now</span>";
+        return $"<span data-i18n=\"time.days_ago\" data-number=\"{(int)span.TotalDays}\">just now</span>";
+    }
+}

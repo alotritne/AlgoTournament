@@ -1,0 +1,57 @@
+@page
+@model algotournament.Pages.Admin.TestCases.IndexModel
+@{
+    ViewData["Title"] = "Manage Test Cases";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1>Test Cases for Problem: @(Model.Problem?.GetTitle(currentLanguage) ?? "Unknown")</h1>
+        <div>
+            <a asp-page="Create" asp-route-problemId="@Model.ProblemId" class="btn btn-primary">Add Test Case</a>
+            <a asp-page="/Admin/Problems/Index" class="btn btn-secondary">Back to Problems</a>
+        </div>
+    </div>
+
+    @if (Model.Problem == null)
+    {
+        <div class="alert alert-warning" style="border: 4px solid var(--text-color); background: #fff3cd; padding: 1rem; font-weight: 700;">Problem not found</div>
+    }
+    else
+    {
+        <div class="admin-table-wrapper">
+            <table class="table admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Order</th>
+                        <th>Points</th>
+                        <th>Is Sample</th>
+                        <th>Input Preview</th>
+                        <th>Output Preview</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var testCase in Model.TestCases)
+                    {
+                        <tr>
+                            <td>@testCase.Id</td>
+                            <td>@testCase.Order</td>
+                            <td>@testCase.Points</td>
+                            <td>@(testCase.IsSample ? "Yes" : "No")</td>
+                            <td>@(testCase.Input.Length > 50 ? testCase.Input.Substring(0, 50) + "..." : testCase.Input)</td>
+                            <td>@(testCase.ExpectedOutput.Length > 50 ? testCase.ExpectedOutput.Substring(0, 50) + "..." : testCase.ExpectedOutput)</td>
+                            <td class="table-actions">
+                                <a asp-page="Edit" asp-route-id="@testCase.Id" asp-route-problemId="@Model.ProblemId" class="btn btn-sm btn-edit">Edit</a>
+                                <a asp-page="Delete" asp-route-id="@testCase.Id" asp-route-problemId="@Model.ProblemId" class="btn btn-sm btn-delete">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

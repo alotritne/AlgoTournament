@@ -1,0 +1,36 @@
+@{
+    var currentLanguage = Context?.Items["CurrentCulture"]?.ToString() ?? "vi";
+    var currentPath = ViewContext.HttpContext.Request.Path.Value ?? "";
+    var baseUrl = $"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}";
+}
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="@GetMetaDescription(currentLanguage, currentPath)">
+<meta name="keywords" content="competitive programming, algorithm, coding contest, programming problems, @(currentLanguage == "vi" ? "lập trình, thuật toán, thi lập trình" : "programming, algorithms, coding challenges")">
+
+<!-- Hreflang Tags for SEO -->
+<link rel="alternate" hreflang="vi" href="@baseUrl/vi@currentPath">
+<link rel="alternate" hreflang="en" href="@baseUrl/en@currentPath">
+<link rel="alternate" hreflang="x-default" href="@baseUrl/vi@currentPath">
+
+@functions {
+    public string GetMetaDescription(string language, string path)
+    {
+        return language switch
+        {
+            "vi" => path switch
+            {
+                var p when p.Contains("/Problems") => "Tổng hợp các bài toán lập trình từ cơ bản đến nâng cao để rèn luyện tư duy thuật toán.",
+                var p when p.Contains("/Contests") => "Tham gia các cuộc thi lập trình trực tuyến và cạnh tranh với các lập trình viên khác.",
+                _ => "Nền tảng thi lập trình nơi các lập trình viên giải bài toán, tham gia cuộc thi và nâng cao tư duy thuật toán."
+            },
+            "en" => path switch
+            {
+                var p when p.Contains("/Problems") => "Collection of programming problems from basic to advanced to improve algorithmic thinking.",
+                var p when p.Contains("/Contests") => "Join online programming contests and compete with other developers.",
+                _ => "Competitive programming platform where developers solve problems, join contests and improve algorithmic thinking."
+            },
+            _ => "Competitive programming platform where developers solve problems, join contests and improve algorithmic thinking."
+        };
+    }
+}

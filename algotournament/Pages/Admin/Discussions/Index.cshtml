@@ -1,0 +1,49 @@
+@page
+@model algotournament.Pages.Admin.Discussions.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_discussions";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1 data-i18n="admin.manage_discussions">Manage Discussions</h1>
+        <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_discussion">Create New Discussion</a>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.id">ID</th>
+                    <th data-i18n="discussion.title">Title</th>
+                    <th data-i18n="discussion.author">Author</th>
+                    <th data-i18n="problems.title">Problem</th>
+                    <th data-i18n="discussion.replies">Replies</th>
+                    <th data-i18n="discussion.views">Views</th>
+                    <th data-i18n="discussion.last_activity">Updated At</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var discussion in Model.Discussions)
+                {
+                    <tr>
+                        <td>@discussion.Id</td>
+                        <td>@discussion.Title</td>
+                        <td>@discussion.Author?.Handle</td>
+                        <td>@(discussion.Problem?.TitleVi ?? "-")</td>
+                        <td>@discussion.ReplyCount</td>
+                        <td>@discussion.ViewCount</td>
+                        <td>@discussion.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@discussion.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            <a asp-page="Delete" asp-route-id="@discussion.Id" class="btn btn-sm btn-delete" data-i18n="common.delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

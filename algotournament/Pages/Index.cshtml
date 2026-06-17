@@ -1,0 +1,153 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "home.title";
+}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <h1 class="hero-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="home.hero_title">code. compete. conquer.</span></h1>
+    <p class="hero-desc">
+        <span data-i18n="home.hero_subtitle">Competitive programming platform where developers solve problems, join contests and improve algorithmic thinking.</span>
+    </p>
+    <div class="hero-actions">
+        <a asp-page="/Contests/Index" class="btn btn-primary" data-i18n="home.join_contest">Join Contest</a>
+        <a asp-page="/Problems/Index" class="btn btn-secondary" data-i18n="home.solve_problems">Solve Problems</a>
+    </div>
+    <div class="hero-stats">
+        <p><span data-i18n="home.users">Users</span>: @Model.TotalUsers | <span data-i18n="home.problems">Problems</span>: @Model.TotalProblems | <span data-i18n="home.contests">Contests</span>: @Model.TotalContests</p>
+    </div>
+</section>
+
+<div class="layout-grid">
+
+    <!-- MAIN CONTENT -->
+    <div class="main-column">
+
+        <!-- UPCOMING CONTESTS SECTION -->
+        <section class="contests-section">
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="contests.upcoming">upcoming contests</span></h2>
+            <div class="contest-list">
+                @if (Model.UpcomingContests != null && Model.UpcomingContests.Count > 0)
+                {
+                    @foreach (var contest in Model.UpcomingContests)
+                    {
+                        <article class="contest-card">
+                            <div class="contest-date">
+                                <span class="month">@contest.StartTime.ToString("MMM").ToUpper()</span>
+                                <span class="day">@contest.StartTime.Day</span>
+                            </div>
+                            <div class="contest-details">
+                                <h3>@contest.Name</h3>
+                                <p>Start: @contest.StartTime.ToString("MMM/dd/yyyy HH:mm")</p>
+                                <div class="contest-meta">
+                                    <span class="duration">Duration: @contest.DurationMinutes mins</span>
+                                    @if (contest.IsRated)
+                                    {
+                                        <span class="badge badge-rated">Rated</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-unrated">Unrated</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="contest-action">
+                                <a asp-page="/Contests/Detail" asp-route-id="@contest.Id" class="link-action" data-i18n="contests.register">Register &rarr;</a>
+                            </div>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p style="font-weight: 700;" data-i18n="empty.no_upcoming_contests_time">No upcoming contests at this time.</p>
+                }
+            </div>
+        </section>
+
+        <!-- PLATFORM STATS -->
+        <section class="platform-stats-section">
+            <div class="stat-item">
+                <span class="stat-value">@Model.TotalUsers</span>
+                <span class="stat-label" data-i18n="home.users">Users</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">@Model.TotalProblems</span>
+                <span class="stat-label" data-i18n="home.problems">Problems</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">@Model.TotalContests</span>
+                <span class="stat-label" data-i18n="home.contests">Contests</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">@Model.TotalSubmissions</span>
+                <span class="stat-label" data-i18n="home.submissions">Submissions</span>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar">
+
+        <!-- Announcements Card -->
+        <section class="sidebar-card">
+            <h3 class="sidebar-title">
+                <a asp-page="/Announcements/Index" class="sidebar-title-link">
+                    <span class="prompt-symbol">&gt;</span> <span data-i18n="nav.announcements">announcements</span>
+                </a>
+            </h3>
+            <ul class="sidebar-list">
+                @if (Model.Announcements != null && Model.Announcements.Count > 0)
+                {
+                    @foreach (var announcement in Model.Announcements)
+                    {
+                        <li>
+                            <a asp-page="/Announcements/Detail" asp-route-id="@announcement.Id">@announcement.Title</a>
+                            <small style="display: block; margin-top: 0.5rem; opacity: 0.7;">@announcement.CreatedAt.ToString("MM/dd/yyyy")</small>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li data-i18n="empty.no_announcements_time">No announcements</li>
+                }
+            </ul>
+        </section>
+
+        <!-- Leaderboard Card -->
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="rankings.title">top rated</span></h3>
+            <ol class="leaderboard-list">
+                @if (Model.TopUsers != null && Model.TopUsers.Count > 0)
+                {
+                    @foreach (var user in Model.TopUsers)
+                    {
+                        <li>
+                            <span class="rank-name">
+                                <a asp-page="/Account/Profile" asp-route-handle="@user.Handle">@user.Handle</a>
+                            </span>
+                            <span style="float: right;">@user.Rating</span>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li data-i18n="empty.no_users_ranked">No users yet</li>
+                }
+            </ol>
+        </section>
+
+        <!-- Quick Links Card -->
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="common.quick_links">quick links</span></h3>
+            <ul class="sidebar-list">
+                <li><a asp-page="/Problems/Index" data-i18n="problems.title">problemset</a></li>
+                <li><a asp-page="/Submissions/Index" data-i18n="problems.submit_solution">submit solution</a></li>
+                <li><a asp-page="/Discussions/Index" data-i18n="nav.discussions">discussions</a></li>
+            </ul>
+        </section>
+
+    </aside>
+
+</div>

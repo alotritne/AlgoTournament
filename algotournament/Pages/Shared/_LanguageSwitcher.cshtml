@@ -1,0 +1,101 @@
+@using System.Globalization
+
+@{
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var currentLang = currentCulture.StartsWith("vi") ? "vi" : "en";
+}
+
+<div class="language-switcher">
+    <button type="button" class="lang-button @(currentLang == "vi" ? "active" : "")" 
+            data-lang="vi" 
+            aria-label="Switch to Vietnamese"
+            aria-pressed="@(currentLang == "vi")">
+        <span class="lang-flag">🇻🇳</span>
+        <span class="lang-code">VI</span>
+    </button>
+    <button type="button" class="lang-button @(currentLang == "en" ? "active" : "")" 
+            data-lang="en" 
+            aria-label="Switch to English"
+            aria-pressed="@(currentLang == "en")">
+        <span class="lang-flag">🇬🇧</span>
+        <span class="lang-code">EN</span>
+    </button>
+</div>
+
+<script>
+    (function() {
+        const langButtons = document.querySelectorAll('.lang-button');
+        
+        // Get initial language from localStorage or default to Vietnamese
+        const savedLang = localStorage.getItem('preferredLanguage') || 'vi';
+        
+        // Set cookie if not already set (for server-side language detection)
+        if (!document.cookie.includes('preferredLanguage=')) {
+            document.cookie = 'preferredLanguage=' + savedLang + '; path=/; max-age=31536000';
+        }
+        
+        // Set initial active state
+        langButtons.forEach(button => {
+            const lang = button.getAttribute('data-lang');
+            const isActive = lang === savedLang;
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-pressed', isActive);
+        });
+        
+        // Handle language selection
+        langButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                
+                // Update UI
+                langButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-pressed', 'true');
+                
+                // Save preference to localStorage
+                localStorage.setItem('preferredLanguage', lang);
+                
+                // Also set cookie for server-side language detection
+                document.cookie = 'preferredLanguage=' + lang + '; path=/; max-age=31536000';
+                
+                // Switch language using i18n library
+                if (typeof i18n !== 'undefined') {
+                    i18n.switchLanguage(lang);
+                }
+                
+                // Reload page to update server-side rendered content
+                window.location.reload();
+                
+                // Dispatch custom event for other components
+                window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: lang } }));
+            });
+        });
+        
+        // Listen for language changes from other components
+        window.addEventListener('languageChanged', function(e) {
+            const lang = e.detail.language;
+            langButtons.forEach(button => {
+                const buttonLang = button.getAttribute('data-lang');
+                const isActive = buttonLang === lang;
+                button.classList.toggle('active', isActive);
+                button.setAttribute('aria-pressed', isActive);
+            });
+        });
+        
+        // Keyboard navigation
+        langButtons.forEach((button, index) => {
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    const direction = e.key === 'ArrowRight' ? 1 : -1;
+                    const nextIndex = (index + direction + langButtons.length) % langButtons.length;
+                    langButtons[nextIndex].focus();
+                }
+            });
+        });
+    })();
+</script>

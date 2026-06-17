@@ -1,0 +1,145 @@
+@page
+@model DetailModel
+@{
+    ViewData["Title"] = "contests.detail";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="page-header" style="flex-direction: column; align-items: flex-start; text-align: center; border-bottom: none; background: var(--text-color); color: var(--bg-color); padding: 3rem;">
+    <h1 class="page-title" style="margin-bottom: 1rem; color: var(--bg-color);"><span class="prompt-symbol" style="color: var(--accent-color);">&gt;</span> @Model.Contest?.Name</h1>
+    
+    @if (Model.Contest != null)
+    {
+        <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; color: var(--accent-color); color: var(--bg-color);">
+            @Model.GetTimeRemaining()
+        </div>
+        <p style="font-size: 1.2rem; font-weight: 700; max-width: 600px; margin: 0 auto 2rem; color: var(--bg-color);">
+            @Model.GetContestStatus()
+        </p>
+        
+        @if (Model.IsRegistered)
+        {
+            <button class="btn btn-secondary" disabled style="font-size: 1.2rem; color: var(--text-color);" data-i18n="contests.registered">Registered</button>
+        }
+        else if (Model.CanRegister)
+        {
+            <form method="post">
+                <button type="submit" class="btn btn-primary" style="font-size: 1.2rem;" data-i18n="contests.register_now">Register Now</button>
+            </form>
+        }
+    }
+</div>
+
+<div class="layout-grid" style="margin-top: 3rem;">
+    <div class="main-column">
+        <h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="problems.title">problems</span></h2>
+        @if (Model.ContestProblems != null && Model.ContestProblems.Count > 0)
+        {
+            <div class="table-container">
+                <table class="brutalist-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th data-i18n="common.name">Name</th>
+                            <th data-i18n="problems.difficulty">Difficulty</th>
+                            <th data-i18n="rankings.problems_solved">Solved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cp in Model.ContestProblems.OrderBy(cp => cp.Order))
+                        {
+                            var problem = cp.Problem;
+                            <tr>
+                                <td>@cp.ProblemLetter</td>
+                                <td>
+                                    @if (Model.HasStarted)
+                                    {
+                                        <a asp-page="/Problems/Detail" asp-route-id="@problem.Id" style="font-weight: 700;">@problem.GetTitle(currentLanguage)</a>
+                                    }
+                                    else
+                                    {
+                                        <span style="font-weight: 700;">@problem.GetTitle(currentLanguage)</span>
+                                    }
+                                </td>
+                                <td class="@GetDifficultyClass(problem.DifficultyRating)">@problem.DifficultyRating</td>
+                                <td>x @Model.GetProblemSolvedCount(problem.Id)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p style="font-weight: 700;" data-i18n="empty.no_problems_contest">No problems available for this contest.</p>
+        }
+    </div>
+    
+    <aside class="sidebar">
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="contests.contest_info">contest info</span></h3>
+            @if (Model.Contest != null)
+            {
+                <div style="padding: 1rem; font-weight: 700;">
+                    <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                        <strong data-i18n="contests.start">Start:</strong> @Model.Contest.StartTime.ToString("MM/dd/yyyy HH:mm")
+                    </p>
+                    <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                        <strong data-i18n="contests.end">End:</strong> @Model.Contest.EndTime.ToString("MM/dd/yyyy HH:mm")
+                    </p>
+                    <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                        <strong data-i18n="contests.duration">Duration:</strong> @Model.Contest.DurationMinutes <span data-i18n="contests.minutes">minutes</span>
+                    </p>
+                    <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                        <strong data-i18n="contests.scoring">Scoring:</strong> @Model.Contest.ScoringMode.ToString()
+                    </p>
+                    @if (Model.Contest.IsRated)
+                    {
+                        <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                            <strong data-i18n="contest.rated">Rated:</strong> <span data-i18n="admin.yes">Yes</span>
+                        </p>
+                    }
+                    else
+                    {
+                        <p style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px dashed var(--text-color);">
+                            <strong data-i18n="contest.rated">Rated:</strong> <span data-i18n="admin.no">No</span>
+                        </p>
+                    }
+                </div>
+            }
+        </section>
+        
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="contests.participants">participants</span></h3>
+            <div style="padding: 1rem; font-weight: 700;">
+                <p>@Model.ParticipantCount <span data-i18n="contests.registered">registered</span></p>
+            </div>
+        </section>
+        
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="contests.rules">rules</span></h3>
+            <ul class="sidebar-list">
+                <li data-i18n="contests.rule_icpc">Standard ICPC rules apply.</li>
+                <li data-i18n="contests.rule_no_discuss">Do not discuss problems during the contest.</li>
+                <li data-i18n="contests.rule_penalty">Penalty is 20 minutes for WA.</li>
+                <li data-i18n="contests.rule_own_work">Code must be your own work.</li>
+            </ul>
+        </section>
+    </aside>
+</div>
+
+@functions {
+    string GetDifficultyClass(int rating)
+    {
+        return rating switch
+        {
+            < 1200 => "diff-easy",
+            < 1600 => "diff-easy",
+            < 1900 => "diff-medium",
+            < 2100 => "diff-medium",
+            < 2400 => "diff-hard",
+            _ => "diff-hard"
+        };
+    }
+}

@@ -1,0 +1,260 @@
+.editor-validation-summary {
+  position: fixed;
+  top: 88px;
+  right: 20px;
+  z-index: 1100;
+  min-width: 280px;
+  max-width: 360px;
+  background: #ffffff;
+  color: #b71c1c;
+  border: 1px solid #d32f2f;
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  padding: 1rem 1.1rem;
+  font-size: 0.95rem;
+}
+
+.submission-page-form {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 1.5rem;
+  align-items: stretch;
+  min-height: calc(100vh - 10rem);
+  overflow: hidden;
+}
+
+.submission-page-form .editor-section {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+
+  border-right: var(--border-width) solid var(--text-color);
+  padding-right: 12px;
+}
+
+.submission-page-form .controls-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+  min-width: 320px;
+  overflow: hidden;
+  border: var(--border-width) solid var(--text-color);
+  border-left: none;
+}
+
+.submission-page-form .controls-header {
+  padding: 1.5rem;
+  border-bottom: var(--border-width) solid var(--text-color);
+}
+
+.submission-page-form .controls-header h2 {
+  margin: 0;
+  font-weight: 800;
+  text-transform: lowercase;
+}
+
+.submission-page-form .controls-header a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.submission-page-form .controls-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.submission-page-form .submit-button-group {
+  margin-top: 0.5rem;
+}
+
+.submission-page-form .submit-info {
+  margin-top: 1.75rem;
+  padding: 1rem;
+  border: 2px dashed var(--text-color);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.monaco-editor-wrapper,
+.monaco-admin-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 0;
+}
+
+.monaco-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  width: 100%;
+  gap: 6px;
+}
+
+.monaco-toolbar .toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.monaco-toolbar .toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.monaco-toolbar .editor-btn {
+  border: 1px solid #3b3f47;
+  background: #181a1e;
+  color: #e5e7eb;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border: 1px solid #4b5563;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.monaco-toolbar .editor-btn:hover,
+.monaco-toolbar .editor-btn:focus {
+  background: #2f343d;
+  transform: translateY(-1px);
+}
+
+.monaco-status-bar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 36px;
+  gap: 1rem;
+  padding: 0.55rem 0.85rem;
+  background: #0f1114;
+  border-top: 1px solid #374151;
+  color: #d1d5db;
+  font-size: 0.82rem;
+  justify-content: space-between;
+}
+
+.monaco-status-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.monaco-status-bar .status-item {
+  white-space: nowrap;
+}
+
+.monaco-editor-container,
+.monaco-admin-editor {
+  flex: 1 1 auto;
+
+  min-height: 550px;
+
+  border: 3px solid #000;
+  border-top: none;
+
+  background: #15171a;
+  overflow: hidden;
+  position: relative;
+}
+
+.monaco-admin-editor {
+  min-height: 260px;
+}
+
+.monaco-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 9999 !important;
+  background: #090b0e;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.monaco-fullscreen .monaco-editor-container {
+  min-height: 100% !important;
+  height: 100% !important;
+  border-radius: 0.75rem;
+}
+
+.monaco-editor-container.fullscreen-active {
+  min-height: 100% !important;
+  height: 100% !important;
+}
+
+.monaco-editor-wrapper .editor-label,
+.monaco-toolbar .toolbar-left span {
+  color: #e2e8f0;
+}
+
+.monaco-editor-wrapper .editor-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.monaco-toolbar .editor-btn.fullscreen-toggle.active {
+  background: #111827;
+  border-color: #9ca3af;
+}
+
+.monaco-editor-wrapper .editor-notice {
+  font-size: 0.86rem;
+  color: #9ca3af;
+}
+
+.monaco-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  flex: 0 0 52px;
+
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
+
+  padding: 0 1rem;
+
+  background: #111316;
+  color: #f8fafc;
+
+  border: 3px solid #000;
+  border-bottom: none;
+
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.submission-page-form {
+  display: flex;
+  align-items: stretch;
+}
+
+.submission-page-form .editor-section,
+.submission-page-form .controls-section {
+  min-height: calc(100vh - 10rem);
+}

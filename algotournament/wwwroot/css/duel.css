@@ -1,0 +1,410 @@
+/* wwwroot/css/duel.css — Brutalist duel UI */
+
+.duel-panel {
+    border: var(--border-width) solid var(--text-color);
+    background-color: #fff;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.duel-error {
+    color: red;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.duel-duration-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.duel-duration-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    border: 2px solid var(--text-color);
+    padding: 0.5rem 1rem;
+    background: var(--bg-color);
+    cursor: pointer;
+}
+
+.duel-duration-option:has(input:checked) {
+    background: var(--accent-color);
+    box-shadow: 3px 3px 0 var(--text-color);
+}
+
+.duel-room-code-input,
+.duel-room-code-display {
+    font-weight: 800;
+    letter-spacing: 0.2em;
+}
+
+.duel-lobby-header {
+    align-items: center;
+}
+
+.duel-lobby-meta p {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.duel-lobby-players {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+    margin-bottom: 2rem;
+}
+
+.duel-player-card {
+    border: var(--border-width) solid var(--text-color);
+    background: #fff;
+    box-shadow: 4px 4px 0 var(--text-color);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.duel-player-slot {
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--text-color);
+    padding-bottom: 0.5rem;
+}
+
+.duel-player-handle {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.duel-player-rating {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.duel-ready-status {
+    font-weight: 800;
+    padding: 0.5rem;
+    border: 2px solid var(--text-color);
+    background: var(--bg-color);
+}
+
+.duel-ready-status.is-ready {
+    background: var(--accent-color);
+    animation: duel-ready-pulse 1s ease-in-out infinite;
+}
+
+.duel-connected-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid var(--text-color);
+    margin-right: 0.4rem;
+}
+
+.duel-ready-status.is-connected .duel-connected-dot {
+    background: #228b22;
+}
+
+.duel-vs {
+    font-size: 2rem;
+    font-weight: 800;
+    align-self: center;
+}
+
+.duel-lobby-actions {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.duel-ready-active {
+    animation: duel-ready-pulse 1s ease-in-out infinite;
+}
+
+@keyframes duel-ready-pulse {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--text-color); }
+}
+
+.duel-countdown-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.duel-countdown-overlay[hidden] {
+    display: none;
+}
+
+.duel-countdown-number {
+    font-size: 8rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    border: var(--border-width) solid var(--text-color);
+    background: #fff;
+    padding: 2rem 3rem;
+    box-shadow: 12px 12px 0 var(--text-color);
+}
+
+.duel-match-end-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.duel-match-end-overlay[hidden] {
+    display: none;
+}
+
+.duel-match-end-box {
+    border: var(--border-width) solid var(--text-color);
+    background: #fff;
+    box-shadow: 12px 12px 0 var(--text-color);
+    padding: 3rem;
+    text-align: center;
+    max-width: 520px;
+}
+
+.duel-match-end-box h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.duel-match-end-box p {
+    font-weight: 700;
+}
+
+/* Match layout */
+.duel-match-timer {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: var(--border-width) solid var(--text-color);
+    background: var(--text-color);
+    color: var(--bg-color);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+}
+
+.duel-match-timer.duel-timer-warning {
+    background: var(--accent-color);
+    color: var(--text-color);
+}
+
+.duel-timer-item {
+    padding: 0.75rem 1rem;
+    border-right: 2px solid var(--bg-color);
+    text-align: center;
+}
+
+.duel-timer-item:last-child {
+    border-right: none;
+}
+
+.duel-timer-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.duel-timer-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.duel-match-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.duel-code-editor {
+    width: 100%;
+    min-height: 420px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    padding: 1rem;
+    border: var(--border-width) solid var(--text-color);
+    background: #fff;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.duel-code-block {
+    border: 2px solid var(--text-color);
+    background: var(--bg-color);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.85rem;
+}
+
+.duel-sample-block {
+    margin-bottom: 1rem;
+}
+
+.duel-submission-feed {
+    margin-bottom: 3rem;
+}
+
+.duel-feed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.duel-feed-list li {
+    padding: 0.75rem 0;
+    border-bottom: 2px dashed var(--text-color);
+    font-weight: 700;
+}
+
+.duel-feed-list li:last-child {
+    border-bottom: none;
+}
+
+/* Result */
+.duel-result-banner {
+    border: var(--border-width) solid var(--text-color);
+    padding: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 8px 8px 0 var(--text-color);
+}
+
+.duel-result-banner h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.duel-win {
+    background: var(--accent-color);
+}
+
+.duel-lose {
+    background: #fff;
+}
+
+.duel-draw {
+    background: var(--bg-color);
+}
+
+/* Navbar dropdown */
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-dropdown-toggle {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    color: inherit;
+    padding: 0;
+}
+
+.nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding-top: 0.5rem;
+    min-width: 180px;
+    z-index: 200;
+}
+
+.nav-dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.5rem;
+}
+
+.nav-dropdown-menu-inner {
+    display: flex;
+    flex-direction: column;
+    border: var(--border-width) solid var(--text-color);
+    background: #fff;
+    box-shadow: 4px 4px 0 var(--text-color);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+    display: block;
+}
+
+.nav-dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    text-decoration: none;
+    border-bottom: 2px solid var(--text-color);
+}
+
+.nav-dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.nav-dropdown-menu a:hover {
+    background: var(--accent-color);
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+    .duel-match-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .duel-lobby-players {
+        grid-template-columns: 1fr;
+    }
+
+    .duel-vs {
+        text-align: center;
+    }
+
+    .duel-match-timer {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .duel-match-timer {
+        grid-template-columns: 1fr;
+    }
+
+    .duel-timer-item {
+        border-right: none;
+        border-bottom: 2px solid var(--bg-color);
+    }
+}

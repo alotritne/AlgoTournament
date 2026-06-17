@@ -1,0 +1,90 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "problems.title";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="problems.title">problems</span></h1>
+    <div class="form-group" style="max-width: 300px;">
+        <input type="text" class="brutalist-input" placeholder="Search problems..." id="searchInput" data-i18n-placeholder="common.search" />
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th data-i18n="common.name">Name</th>
+                <th data-i18n="problems.difficulty">Difficulty</th>
+                <th data-i18n="rankings.problems_solved">Solved</th>
+            </tr>
+        </thead>
+        <tbody id="problemsTable">
+            @if (Model.Problems != null && Model.Problems.Count > 0)
+            {
+                @foreach (var problem in Model.Problems)
+                {
+                    <tr>
+                        <td>@problem.Id</td>
+                        <td><a asp-page="Detail" asp-route-id="@problem.Id" style="font-weight: 700;">@problem.GetTitle(currentLanguage)</a></td>
+                        <td class="@GetDifficultyClass(problem.DifficultyRating)">@problem.DifficultyRating</td>
+                        <td>x @Model.GetSolvedCount(problem.Id)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" style="font-weight: 700; text-align: center;" data-i18n="empty.no_problems_available">No problems available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+    @if (Model.TotalPages > 1)
+    {
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <a asp-page="./Index" asp-route-page="@i" class="page-link @(Model.CurrentPage == i ? "active" : "")">@i</a>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#problemsTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetDifficultyClass(int rating)
+    {
+        return rating switch
+        {
+            < 1200 => "diff-easy",
+            < 1600 => "diff-easy",
+            < 1900 => "diff-medium",
+            < 2100 => "diff-medium",
+            < 2400 => "diff-hard",
+            _ => "diff-hard"
+        };
+    }
+}

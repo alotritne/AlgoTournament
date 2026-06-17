@@ -1,0 +1,448 @@
+/* css/admin.css - Admin Panel Styling */
+
+/* ADMIN PAGE HEADER */
+.admin-header {
+    margin-bottom: 2rem;
+    border-bottom: 4px solid var(--text-color);
+    padding-bottom: 1rem;
+}
+
+.admin-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.admin-header .breadcrumb {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ADMIN FORM STYLING */
+.admin-form-container {
+    background-color: #fff;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.admin-form-container .card-body {
+    padding: 0;
+}
+
+/* OVERRIDING DEFAULT BOOTSTRAP FORM STYLES */
+.admin-form-container .form-control {
+    border: 2px solid var(--text-color);
+    background-color: var(--bg-color);
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-color);
+    border-radius: 0;
+    outline: none;
+    transition: all 0.1s ease-in-out;
+}
+
+.admin-form-container .form-control:focus {
+    background-color: #fff;
+    box-shadow: 4px 4px 0 var(--accent-color);
+    border-color: var(--text-color);
+}
+
+.admin-form-container .form-control:read-only {
+    background-color: #e5dfd1;
+    cursor: not-allowed;
+}
+
+.admin-form-container .form-control::placeholder {
+    color: #999;
+}
+
+.admin-form-container label.control-label,
+.admin-form-container .form-label {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    display: block;
+}
+
+.admin-form-container .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form-container .form-check {
+    padding-left: 0;
+}
+
+.admin-form-container .form-check-input {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid var(--text-color);
+    margin-right: 0.75rem;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+}
+
+.admin-form-container .form-check-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.admin-form-container select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23111111' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+/* TEXTAREA STYLING */
+.admin-form-container textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* MONACO EDITOR WRAPPER IN ADMIN */
+.admin-form-container .monaco-admin-editor-wrapper {
+    border: 2px solid var(--text-color);
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.admin-form-container .monaco-admin-editor-wrapper textarea {
+    border: none;
+    border-radius: 0;
+}
+
+/* VALIDATION STYLING */
+.admin-form-container .text-danger {
+    color: #dc3545 !important;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.admin-form-container .validation-summary-valid {
+    display: none;
+}
+
+.admin-form-container .validation-summary-errors {
+    background-color: #fee;
+    border: 2px solid #dc3545;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-form-container .input-validation-error {
+    border-color: #dc3545 !important;
+    background-color: #fee !important;
+}
+
+/* FORM BUTTONS */
+.admin-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--text-color);
+}
+
+.admin-form-actions .btn {
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.admin-form-actions .btn-primary {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+.admin-form-actions .btn-secondary {
+    background-color: #fff;
+    color: var(--text-color);
+}
+
+.admin-form-actions .btn:hover,
+.admin-form-actions .btn:active {
+    box-shadow: 0 0 0 var(--text-color);
+    transform: translate(var(--shadow-offset), var(--shadow-offset));
+}
+
+/* FORM SECTIONS */
+.admin-form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--bg-color);
+    border: 2px solid var(--text-color);
+}
+
+.admin-form-section h5 {
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--text-color);
+    padding-bottom: 0.5rem;
+}
+
+.admin-form-section .text-muted {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* HR IN FORMS */
+.admin-form-container hr {
+    border: none;
+    border-top: 4px solid var(--text-color);
+    margin: 2rem 0;
+}
+
+/* ROW HELPERS */
+.admin-form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .admin-form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* ADMIN TABLE ENHANCEMENTS */
+.admin-table-wrapper {
+    background-color: #fff;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.admin-table-wrapper .table {
+    margin-bottom: 0;
+}
+
+.admin-table-wrapper .table thead th {
+    background-color: var(--accent-color);
+    color: #fff;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 4px solid var(--text-color);
+}
+
+.admin-table-wrapper .table tbody td {
+    border-bottom: 2px solid var(--text-color);
+    padding: 1rem;
+}
+
+.admin-table-wrapper .table tbody tr:hover {
+    background-color: #e5dfd1;
+}
+
+/* ADMIN ACTION BUTTONS IN TABLES */
+.table-actions .btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+.table-actions .btn-edit {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.table-actions .btn-delete {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.table-actions .btn-view {
+    background-color: #2196F3;
+    color: #fff;
+}
+
+/* ADMIN DASHBOARD CARDS */
+.admin-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-stat-card {
+    background-color: #fff;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.admin-stat-card .stat-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.admin-stat-card .stat-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+/* ADMIN NAVIGATION */
+.admin-nav {
+    background-color: #fff;
+    border: var(--border-width) solid var(--text-color);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-nav li a {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    transition: all 0.1s;
+}
+
+.admin-nav li a:hover,
+.admin-nav li a.active {
+    background-color: var(--accent-color);
+    color: #fff;
+    border-color: var(--text-color);
+}
+
+/* DELETE CONFIRMATION */
+.delete-confirmation {
+    background-color: #fee;
+    border: 4px solid #dc3545;
+    padding: 2rem;
+    text-align: center;
+}
+
+.delete-confirmation h3 {
+    color: #dc3545;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.delete-confirmation p {
+    margin-bottom: 1.5rem;
+}
+
+.delete-confirmation .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.delete-confirmation .btn-cancel {
+    background-color: #fff;
+    color: var(--text-color);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .admin-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .admin-form-container {
+        padding: 1rem;
+    }
+    
+    .admin-form-actions {
+        flex-direction: column;
+    }
+    
+    .admin-form-actions .btn {
+        width: 100%;
+    }
+    
+    .admin-nav ul {
+        flex-direction: column;
+    }
+    
+    .admin-dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ADMIN NAVBAR FIXES */
+.navbar {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.nav-links {
+    max-width: 70%;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 1rem 1.5rem;
+    }
+    
+    .nav-links {
+        max-width: 65%;
+        gap: 1rem;
+    }
+    
+    .nav-links a {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .nav-links {
+        max-width: 100%;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+}

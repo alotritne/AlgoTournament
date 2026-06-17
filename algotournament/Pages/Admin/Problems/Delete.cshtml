@@ -1,0 +1,54 @@
+@page
+@model algotournament.Pages.Admin.Problems.DeleteModel
+@{
+    ViewData["Title"] = "admin.delete_problem";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.delete_problem">Delete Problem</h1>
+    </div>
+    
+    <div class="delete-confirmation">
+        <h3 data-i18n="admin.delete_problem_confirmation">Are you sure you want to delete this problem?</h3>
+        <p data-i18n="admin.delete_problem_warning">This action cannot be undone. All associated data will also be deleted:</p>
+        <ul>
+            <li>Test Cases: @Model.Problem.TestCases.Count</li>
+            <li>Submissions: @Model.Problem.Submissions.Count</li>
+            <li>Contest Relationships: @Model.Problem.ContestProblems.Count</li>
+        </ul>
+    </div>
+    
+    <div class="admin-form-container" style="margin-bottom: 2rem;">
+        <dl class="row">
+            <dt class="col-sm-3" data-i18n="admin.id">ID</dt>
+            <dd class="col-sm-9">@Model.Problem.Id</dd>
+            
+            <dt class="col-sm-3" data-i18n="admin.title_vi">Title (Vietnamese)</dt>
+            <dd class="col-sm-9">@Model.Problem.TitleVi</dd>
+            
+            <dt class="col-sm-3" data-i18n="admin.title_en_optional">Title (English)</dt>
+            <dd class="col-sm-9">@Model.Problem.TitleEn</dd>
+            
+            <dt class="col-sm-3" data-i18n="admin.slug">Slug</dt>
+            <dd class="col-sm-9">@Model.Problem.Slug</dd>
+            
+            <dt class="col-sm-3" data-i18n="problems.difficulty">Difficulty</dt>
+            <dd class="col-sm-9">@Model.Problem.DifficultyRating</dd>
+            
+            <dt class="col-sm-3" data-i18n="problems.time_limit">Time Limit</dt>
+            <dd class="col-sm-9">@Model.Problem.TimeLimitMs ms</dd>
+            
+            <dt class="col-sm-3" data-i18n="problems.memory_limit">Memory Limit</dt>
+            <dd class="col-sm-9">@Model.Problem.MemoryLimitMB MB</dd>
+        </dl>
+        
+        <form method="post">
+            <input type="hidden" asp-for="Problem.Id" />
+            <div class="admin-form-actions">
+                <input type="submit" value="Delete" class="btn btn-danger" data-i18n="common.delete" />
+                <a asp-page="Index" class="btn btn-cancel" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

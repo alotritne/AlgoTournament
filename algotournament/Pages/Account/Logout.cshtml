@@ -1,0 +1,16 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "auth.logout";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body text-center">
+            <h1 data-i18n="auth.logout">@ViewData["Title"]</h1>
+            <p class="lead" data-i18n="auth.logout_success">You have successfully logged out of the application.</p>
+            <a asp-page="/Account/Login" class="btn btn-primary" data-i18n="auth.login_again">Login Again</a>
+            <a asp-page="/Index" class="btn btn-secondary" data-i18n="nav.home">Back to Home</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+@{
+    var currentPage = ViewData["Title"]?.ToString();
+}
+
+<div style="background: var(--text-color); padding: 1rem;">
+    <div class="admin-nav-bar container" style="padding: 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a asp-page="/Admin/Dashboard" class="btn @(currentPage == "admin.dashboard" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="admin.overview">Overview</a>
+        <a asp-page="/Admin/Tournaments/Index" class="btn @(currentPage == "admin.manage_tournaments" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="admin.tournaments">Tournaments</a>
+        <a asp-page="/Admin/Problems/Index" class="btn @(currentPage == "admin.manage_problems" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="problems.title">Problems</a>
+        <a asp-page="/Admin/Contests/Index" class="btn @(currentPage == "admin.manage_contests" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="contests.title">Contests</a>
+        <a asp-page="/Admin/Discussions/Index" class="btn @(currentPage == "admin.manage_discussions" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="nav.discussions">Discussions</a>
+        <a asp-page="/Admin/Blog/Index" class="btn @(currentPage == "admin.manage_blog" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="nav.blog">Blog</a>
+        <a asp-page="/Admin/Duels/Index" class="btn @(currentPage == "admin.manage_duels" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="nav.duels">Duels</a>
+        <a asp-page="/Admin/Announcements/Index" class="btn @(currentPage == "admin.manage_announcements" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="admin.manage_announcements">Announcements</a>
+        <a asp-page="/Admin/Users/Index" class="btn @(currentPage == "admin.manage_users" ? "btn-primary" : "btn-secondary")" style="text-decoration: none; color: inherit;" data-i18n="admin.manage_users">Users</a>
+    </div>
+</div>

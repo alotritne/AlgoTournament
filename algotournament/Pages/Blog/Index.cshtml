@@ -1,0 +1,34 @@
+@page
+@model algotournament.Pages.Blog.IndexModel
+@{
+    ViewData["Title"] = "nav.blog";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="nav.blog">blog</span></h1>
+</div>
+
+@if (Model.BlogPosts.Any())
+{
+    <div class="blog-list">
+        @foreach (var post in Model.BlogPosts)
+        {
+            <article class="blog-post">
+                <div class="blog-meta">
+                    @post.PublishedAt.ToString("yyyy-MM-dd") &bull; <span data-i18n="blog.by">by</span> @(post.Author?.Handle ?? "unknown")
+                </div>
+                <h2 class="blog-title">
+                    <a asp-page="Detail" asp-route-slug="@post.Slug" style="font-weight: 700;">@post.Title</a>
+                </h2>
+                <p class="blog-excerpt">@(post.Content.Length > 150 ? post.Content.Substring(0, 150) + "..." : post.Content)</p>
+                <a asp-page="Detail" asp-route-slug="@post.Slug" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" data-i18n="blog.read_more">Read More &rarr;</a>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <article class="blog-post">
+        <p style="font-weight: 700;" data-i18n="empty.no_blog_posts">No blog posts yet.</p>
+    </article>
+}

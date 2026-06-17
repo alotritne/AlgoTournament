@@ -1,0 +1,48 @@
+@page
+@model algotournament.Pages.Contests.RankingsModel
+@{
+    ViewData["Title"] = "contests.rankings";
+}
+
+<div class="container mt-4">
+    <h1 data-i18n="contests.rankings">Contest Rankings: @Model.Contest?.Name</h1>
+    
+    @if (Model.Contest == null)
+    {
+        <div class="alert alert-warning" data-i18n="contests.not_found">Contest not found</div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th data-i18n="rankings.rank">Rank</th>
+                            <th data-i18n="rankings.user">User</th>
+                            <th data-i18n="rankings.solved">Solved</th>
+                            <th data-i18n="rankings.score">Score</th>
+                            <th data-i18n="rankings.penalty">Penalty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ranking in Model.Rankings)
+                        {
+                            <tr>
+                                <td>@ranking.Rank</td>
+                                <td>@ranking.User?.Handle</td>
+                                <td>@ranking.ProblemsSolved</td>
+                                <td>@ranking.TotalScore</td>
+                                <td>@ranking.PenaltyTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <a asp-page="Detail" asp-route-id="@Model.Contest.Id" class="btn btn-secondary" data-i18n="contests.back_to_contest">Back to Contest</a>
+        </div>
+    }
+</div>

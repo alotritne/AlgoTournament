@@ -1,0 +1,12 @@
+/* 
+  ALGO TOURNAMENT 2.0 
+  Main Stylesheet (CSS Layers)
+*/
+
+@import 'variables.css';
+@import 'base.css';
+@import 'layout.css';
+@import 'components.css';
+@import 'pages.css';
+@import 'responsive.css';
+@import 'duel.css';

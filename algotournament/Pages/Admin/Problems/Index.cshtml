@@ -1,0 +1,54 @@
+@page
+@model algotournament.Pages.Admin.Problems.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_problems";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1 data-i18n="admin.manage_problems">Manage Problems</h1>
+        <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_new_problem">Create New Problem</a>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.id">ID</th>
+                    <th data-i18n="common.name">Title</th>
+                    <th data-i18n="admin.slug">Slug</th>
+                    <th data-i18n="problems.difficulty">Difficulty</th>
+                    <th data-i18n="problems.time_limit">Time Limit</th>
+                    <th data-i18n="problems.memory_limit">Memory Limit</th>
+                    <th data-i18n="admin.is_public">Is Public</th>
+                    <th data-i18n="admin.test_cases">Test Cases</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var problem in Model.Problems)
+                {
+                    <tr>
+                        <td>@problem.Id</td>
+                        <td>@problem.GetTitle(currentLanguage)</td>
+                        <td>@problem.Slug</td>
+                        <td>@problem.DifficultyRating</td>
+                        <td>@problem.TimeLimitMs ms</td>
+                        <td>@problem.MemoryLimitMB MB</td>
+                        <td data-i18n="@($"admin.{(problem.IsPublic ? "yes" : "no")}")">@(problem.IsPublic ? "Yes" : "No")</td>
+                        <td>@problem.TestCases.Count</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@problem.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            <a asp-page="Delete" asp-route-id="@problem.Id" class="btn btn-sm btn-delete" data-i18n="common.delete">Delete</a>
+                            <a asp-page="/Admin/TestCases/Index" asp-route-problemId="@problem.Id" class="btn btn-sm btn-view" data-i18n="admin.test_cases_link">Test Cases</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

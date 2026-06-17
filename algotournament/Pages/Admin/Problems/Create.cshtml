@@ -1,0 +1,171 @@
+@page
+@model algotournament.Pages.Admin.Problems.CreateModel
+@{
+    ViewData["Title"] = "admin.create_problem";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.create_problem">Create Problem</h1>
+    </div>
+    
+    <div class="admin-form-container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Auto-translate option -->
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    <input asp-for="AutoTranslate" class="form-check-input" id="autoTranslate" />
+                    <label asp-for="AutoTranslate" class="form-check-label" data-i18n="admin.auto_translate">Auto-translate to English</label>
+                </div>
+                <small class="text-muted" data-i18n="admin.auto_translate_desc">Automatically translate Vietnamese content to English using AI translation service</small>
+            </div>
+
+            <hr class="my-4">
+            
+            <div class="admin-form-section">
+                <h5 data-i18n="admin.vietnamese_content_primary">Vietnamese Content (Primary)</h5>
+            
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.TitleVi" class="control-label" data-i18n="admin.title_vi">Title (Vietnamese)</label>
+                    <input asp-for="Problem.TitleVi" class="form-control" />
+                    <span asp-validation-for="Problem.TitleVi" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.Slug" class="control-label" data-i18n="admin.slug">Slug</label>
+                    <input asp-for="Problem.Slug" class="form-control" />
+                    <span asp-validation-for="Problem.Slug" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.StatementVi" class="control-label" data-i18n="admin.statement_vi">Statement (Vietnamese)</label>
+                    <textarea asp-for="Problem.StatementVi" id="Problem_StatementVi" class="form-control" rows="10"></textarea>
+                    <span asp-validation-for="Problem.StatementVi" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.InputDescriptionVi" class="control-label" data-i18n="admin.input_description_vi">Input Description (Vietnamese)</label>
+                    <textarea asp-for="Problem.InputDescriptionVi" id="Problem_InputDescriptionVi" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Problem.InputDescriptionVi" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.OutputDescriptionVi" class="control-label" data-i18n="admin.output_description_vi">Output Description (Vietnamese)</label>
+                    <textarea asp-for="Problem.OutputDescriptionVi" id="Problem_OutputDescriptionVi" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Problem.OutputDescriptionVi" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.ConstraintsVi" class="control-label" data-i18n="admin.constraints_vi">Constraints (Vietnamese)</label>
+                    <textarea asp-for="Problem.ConstraintsVi" id="Problem_ConstraintsVi" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Problem.ConstraintsVi" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.ExplanationVi" class="control-label" data-i18n="admin.explanation_vi">Explanation (Vietnamese)</label>
+                    <textarea asp-for="Problem.ExplanationVi" id="Problem_ExplanationVi" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Problem.ExplanationVi" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="admin-form-section">
+                <h5 data-i18n="admin.english_content">English Content</h5>
+                <p class="text-muted small" data-i18n="admin.english_content_desc">These fields are optional. If left empty when auto-translate is enabled, they will be automatically filled by AI translation. You can also fill them manually.</p>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.TitleEn" class="control-label" data-i18n="admin.title_en_optional">Title (English) - Optional</label>
+                    <input asp-for="Problem.TitleEn" class="form-control" placeholder="Leave empty for auto-translation" />
+                    <span asp-validation-for="Problem.TitleEn" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.StatementEn" class="control-label" data-i18n="admin.statement_en_optional">Statement (English) - Optional</label>
+                    <textarea asp-for="Problem.StatementEn" id="Problem_StatementEn" class="form-control" rows="10" placeholder="Leave empty for auto-translation"></textarea>
+                    <span asp-validation-for="Problem.StatementEn" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.InputDescriptionEn" class="control-label" data-i18n="admin.input_description_en_optional">Input Description (English) - Optional</label>
+                    <textarea asp-for="Problem.InputDescriptionEn" id="Problem_InputDescriptionEn" class="form-control" rows="3" placeholder="Leave empty for auto-translation"></textarea>
+                    <span asp-validation-for="Problem.InputDescriptionEn" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.OutputDescriptionEn" class="control-label" data-i18n="admin.output_description_en_optional">Output Description (English) - Optional</label>
+                    <textarea asp-for="Problem.OutputDescriptionEn" id="Problem_OutputDescriptionEn" class="form-control" rows="3" placeholder="Leave empty for auto-translation"></textarea>
+                    <span asp-validation-for="Problem.OutputDescriptionEn" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.ConstraintsEn" class="control-label" data-i18n="admin.constraints_en_optional">Constraints (English) - Optional</label>
+                    <textarea asp-for="Problem.ConstraintsEn" id="Problem_ConstraintsEn" class="form-control" rows="3" placeholder="Leave empty for auto-translation"></textarea>
+                    <span asp-validation-for="Problem.ConstraintsEn" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.ExplanationEn" class="control-label" data-i18n="admin.explanation_en_optional">Explanation (English) - Optional</label>
+                    <textarea asp-for="Problem.ExplanationEn" id="Problem_ExplanationEn" class="form-control" rows="5" placeholder="Leave empty for auto-translation"></textarea>
+                    <span asp-validation-for="Problem.ExplanationEn" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="admin-form-section">
+                <h5 data-i18n="admin.technical_settings">Technical Settings</h5>
+            
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.SampleInput" class="control-label" data-i18n="problems.sample_input">Sample Input</label>
+                    <textarea asp-for="Problem.SampleInput" id="Problem_SampleInput" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Problem.SampleInput" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Problem.SampleOutput" class="control-label" data-i18n="problems.sample_output">Sample Output</label>
+                    <textarea asp-for="Problem.SampleOutput" id="Problem_SampleOutput" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Problem.SampleOutput" class="text-danger"></span>
+                </div>
+                
+                <div class="admin-form-row">
+                    <div class="form-group mb-3">
+                        <label asp-for="Problem.TimeLimitMs" class="control-label" data-i18n="problems.time_limit_ms">Time Limit (ms)</label>
+                        <input asp-for="Problem.TimeLimitMs" class="form-control" type="number" />
+                        <span asp-validation-for="Problem.TimeLimitMs" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Problem.MemoryLimitMB" class="control-label" data-i18n="problems.memory_limit_mb">Memory Limit (MB)</label>
+                        <input asp-for="Problem.MemoryLimitMB" class="form-control" type="number" />
+                        <span asp-validation-for="Problem.MemoryLimitMB" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Problem.DifficultyRating" class="control-label" data-i18n="problems.difficulty_rating">Difficulty Rating</label>
+                        <input asp-for="Problem.DifficultyRating" class="form-control" type="number" />
+                        <span asp-validation-for="Problem.DifficultyRating" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input asp-for="Problem.IsPublic" class="form-check-input" />
+                        <label asp-for="Problem.IsPublic" class="form-check-label" data-i18n="admin.public">Public</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-form-actions">
+                <input type="submit" value="Create" class="btn btn-primary" data-i18n="common.create" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

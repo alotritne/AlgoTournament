@@ -1,0 +1,8 @@
+/* css/variables.css */
+:root {
+    --bg-color: #F5F1E8;
+    --text-color: #111111;
+    --accent-color: #FF6B2C;
+    --border-width: 4px;
+    --shadow-offset: 6px;
+}

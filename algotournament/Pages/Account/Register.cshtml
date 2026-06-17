@@ -1,0 +1,49 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "auth.register";
+}
+
+<main class="container">
+    <div class="auth-container">
+        <h1 class="auth-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="auth.register">auth::register</span></h1>
+        
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 1rem;"></div>
+            
+            <div class="form-group">
+                <label asp-for="Input.Handle" class="form-label" data-i18n="auth.username">Username</label>
+                <input asp-for="Input.Handle" class="brutalist-input" placeholder="choose handle..." data-i18n-placeholder="auth.choose_handle" />
+                <span asp-validation-for="Input.Handle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Email" class="form-label" data-i18n="auth.email">Email</label>
+                <input asp-for="Input.Email" class="brutalist-input" placeholder="you@domain.com" data-i18n-placeholder="auth.you_domain" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Input.Password" class="form-label" data-i18n="auth.password">Password</label>
+                <input asp-for="Input.Password" class="brutalist-input" type="password" placeholder="********" data-i18n-placeholder="auth.password_placeholder" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword" class="form-label" data-i18n="auth.confirm_password">Confirm Password</label>
+                <input asp-for="Input.ConfirmPassword" class="brutalist-input" type="password" placeholder="********" data-i18n-placeholder="auth.password_placeholder" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block" data-i18n="auth.create_account">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p><span data-i18n="auth.already_have_account">Already have an account?</span> <a asp-page="./Login" data-i18n="auth.login_here">Login here</a>.</p>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

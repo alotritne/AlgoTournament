@@ -1,0 +1,63 @@
+@page
+@model algotournament.Pages.Admin.TestCases.EditModel
+@{
+    ViewData["Title"] = "admin.edit_test_case";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.edit_test_case">Edit Test Case for Problem: @(Model.Problem?.GetTitle(currentLanguage) ?? "Unknown")</h1>
+    </div>
+    
+    <div class="admin-form-container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TestCase.Id" />
+            <input type="hidden" asp-for="TestCase.ProblemId" />
+            
+            <div class="form-group mb-3">
+                <label asp-for="TestCase.Input" class="control-label" data-i18n="problems.input"></label>
+                <textarea asp-for="TestCase.Input" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="TestCase.Input" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="TestCase.ExpectedOutput" class="control-label" data-i18n="problems.expected_output"></label>
+                <textarea asp-for="TestCase.ExpectedOutput" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="TestCase.ExpectedOutput" class="text-danger"></span>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="form-group mb-3">
+                    <label asp-for="TestCase.Points" class="control-label" data-i18n="admin.points"></label>
+                    <input asp-for="TestCase.Points" class="form-control" type="number" />
+                    <span asp-validation-for="TestCase.Points" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="TestCase.Order" class="control-label" data-i18n="admin.order"></label>
+                    <input asp-for="TestCase.Order" class="form-control" type="number" />
+                    <span asp-validation-for="TestCase.Order" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="TestCase.IsSample" class="form-check-input" />
+                        <label asp-for="TestCase.IsSample" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-form-actions">
+                <input type="submit" value="Save" class="btn btn-primary" data-i18n="common.save" />
+                <a asp-page="Index" asp-route-problemId="@Model.TestCase.ProblemId" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

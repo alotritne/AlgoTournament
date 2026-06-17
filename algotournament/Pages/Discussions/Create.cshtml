@@ -1,0 +1,45 @@
+@page
+@model algotournament.Pages.Discussions.CreateModel
+@{
+    ViewData["Title"] = "discussion.new_discussion";
+}
+
+<div class="container mt-4">
+    <h1 data-i18n="discussion.new_discussion">New Discussion</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Discussion.Title" class="control-label" data-i18n="discussion.title"></label>
+                    <input asp-for="Discussion.Title" class="form-control" required />
+                    <span asp-validation-for="Discussion.Title" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Discussion.Content" class="control-label" data-i18n="discussion.content"></label>
+                    <textarea asp-for="Discussion.Content" class="form-control" rows="10" required></textarea>
+                    <span asp-validation-for="Discussion.Content" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Discussion.ProblemId" class="control-label" data-i18n="admin.related_problem">Related Problem (Optional)</label>
+                    <select asp-for="Discussion.ProblemId" class="form-control" asp-items="Model.Problems">
+                        <option value="" data-i18n="admin.none">-- None --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" value="Create Discussion" class="btn btn-primary" data-i18n="discussion.create_discussion" />
+                    <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

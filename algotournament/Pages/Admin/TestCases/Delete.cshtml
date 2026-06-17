@@ -1,0 +1,51 @@
+@page
+@model algotournament.Pages.Admin.TestCases.DeleteModel
+@{
+    ViewData["Title"] = "admin.delete_test_case";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.delete_test_case">Delete Test Case</h1>
+    </div>
+    
+    <div class="delete-confirmation">
+        <h3 data-i18n="admin.delete_test_case_confirmation">Are you sure you want to delete this test case?</h3>
+        
+        <div class="admin-form-container" style="margin-bottom: 2rem;">
+            <dl class="row">
+                <dt class="col-sm-3" data-i18n="admin.id">ID</dt>
+                <dd class="col-sm-9">@Model.TestCase.Id</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.related_problem">Problem</dt>
+                <dd class="col-sm-9">@Model.Problem?.GetTitle(currentLanguage)</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.order">Order</dt>
+                <dd class="col-sm-9">@Model.TestCase.Order</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.points">Points</dt>
+                <dd class="col-sm-9">@Model.TestCase.Points</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.is_sample">Is Sample</dt>
+                <dd class="col-sm-9">@(Model.TestCase.IsSample ? "Yes" : "No")</dd>
+                
+                <dt class="col-sm-3" data-i18n="problems.input">Input</dt>
+                <dd class="col-sm-9"><pre style="background: var(--bg-color); padding: 0.5rem; border: 2px solid var(--text-color);">@Model.TestCase.Input</pre></dd>
+                
+                <dt class="col-sm-3" data-i18n="problems.expected_output">Expected Output</dt>
+                <dd class="col-sm-9"><pre style="background: var(--bg-color); padding: 0.5rem; border: 2px solid var(--text-color);">@Model.TestCase.ExpectedOutput</pre></dd>
+            </dl>
+        </div>
+            
+        <form method="post">
+            <input type="hidden" asp-for="TestCase.Id" />
+            <input type="hidden" asp-for="TestCase.ProblemId" />
+            <div class="admin-form-actions">
+                <input type="submit" value="Delete" class="btn btn-danger" data-i18n="common.delete" />
+                <a asp-page="Index" asp-route-problemId="@Model.TestCase.ProblemId" class="btn btn-cancel" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+@page
+@model algotournament.Pages.Admin.Blog.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_blog";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1 data-i18n="admin.manage_blog">Manage Blog</h1>
+        <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_blog_post">Create New Post</a>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.id">ID</th>
+                    <th data-i18n="blog.title">Title</th>
+                    <th data-i18n="admin.slug">Slug</th>
+                    <th data-i18n="discussion.author">Author</th>
+                    <th data-i18n="admin.is_public">Published</th>
+                    <th data-i18n="dashboard.created_at">Published At</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var post in Model.BlogPosts)
+                {
+                    <tr>
+                        <td>@post.Id</td>
+                        <td>@post.Title</td>
+                        <td>@post.Slug</td>
+                        <td>@post.Author?.Handle</td>
+                        <td data-i18n="@(post.IsPublished ? "admin.yes" : "admin.no")">@(post.IsPublished ? "Yes" : "No")</td>
+                        <td>@post.PublishedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@post.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            <a asp-page="Delete" asp-route-id="@post.Id" class="btn btn-sm btn-delete" data-i18n="common.delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

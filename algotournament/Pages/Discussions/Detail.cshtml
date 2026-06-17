@@ -1,0 +1,89 @@
+@page
+@model algotournament.Pages.Discussions.DetailModel
+@{
+    ViewData["Title"] = Model.Discussion?.Title ?? "Discussion";
+}
+
+<div class="container mt-4">
+    @if (Model.Discussion == null)
+    {
+        <div class="alert alert-warning" data-i18n="discussion.not_found">Discussion not found</div>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1>@Model.Discussion.Title</h1>
+                <div class="text-muted mb-3">
+                    <span data-i18n="discussion.posted_by">Posted by</span> @Model.Discussion.Author?.Handle <span data-i18n="blog.on">on</span> @Model.Discussion.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                    @if (Model.Discussion.Problem != null)
+                    {
+                        <span> | <span data-i18n="discussion.related_to">Related to</span>: <a asp-page="/Problems/Detail" asp-route-id="@Model.Discussion.ProblemId">@Model.Discussion.Problem.TitleVi</a></span>
+                    }
+                </div>
+                <div class="mb-3">
+                    @Model.Discussion.Content
+                </div>
+                <div class="text-muted">
+                    @Model.Discussion.ViewCount <span data-i18n="discussion.views">views</span> | @Model.Discussion.ReplyCount <span data-i18n="discussion.replies">replies</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 data-i18n="discussion.replies">Replies</h3>
+                
+                @if (Model.Replies.Any())
+                {
+                    @foreach (var reply in Model.Replies)
+                    {
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>@reply.Author?.Handle</strong>
+                                <small class="text-muted">@reply.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small>
+                            </div>
+                            <div class="mt-2">@reply.Content</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted" data-i18n="discussion.no_replies">No replies yet.</p>
+                }
+            </div>
+        </div>
+        
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h3 data-i18n="discussion.post_reply">Post a Reply</h3>
+                    <form method="post">
+                        <div class="form-group mb-3">
+                            <textarea asp-for="NewReplyContent" class="form-control" rows="5" required></textarea>
+                            <span asp-validation-for="NewReplyContent" class="text-danger"></span>
+                        </div>
+                        <input type="submit" value="Post Reply" class="btn btn-primary" data-i18n="discussion.post_reply" />
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-muted mb-0"><a asp-page="/Account/Login" data-i18n="auth.login">Log in</a> <span data-i18n="discussion.to_post_reply">to post a reply.</span></p>
+                </div>
+            </div>
+        }
+        
+        <div class="mt-3">
+            <a asp-page="Index" class="btn btn-secondary" data-i18n="discussion.back_to_discussions">Back to Discussions</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

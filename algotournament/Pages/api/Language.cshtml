@@ -1,0 +1,16 @@
+@page
+@model algotournament.Pages.api.LanguageModel
+@{
+    Response.ContentType = "application/json";
+}
+
+@{
+    if (Model.Language != null)
+    {
+        <text>{"currentLanguage":"@Model.Language","success":true}</text>
+    }
+    else
+    {
+        <text>{"success":false,"error":"Invalid request"}</text>
+    }
+}

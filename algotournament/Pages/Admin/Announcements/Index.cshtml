@@ -1,0 +1,51 @@
+@page
+@model algotournament.Pages.Admin.Announcements.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_announcements";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header d-flex justify-content-between align-items-center">
+        <h1 data-i18n="admin.manage_announcements">Manage Announcements</h1>
+        <a asp-page="Create" class="btn btn-primary" data-i18n="admin.create_announcement">Create New Announcement</a>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.id">ID</th>
+                    <th data-i18n="blog.title">Title</th>
+                    <th data-i18n="dashboard.name">Creator</th>
+                    <th data-i18n="admin.is_global">Is Global</th>
+                    <th data-i18n="admin.tournament">Contest</th>
+                    <th data-i18n="admin.expires_at">Expires At</th>
+                    <th data-i18n="admin.is_active">Is Active</th>
+                    <th data-i18n="dashboard.created_at">Created At</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var announcement in Model.Announcements)
+                {
+                    <tr>
+                        <td>@announcement.Id</td>
+                        <td>@announcement.Title</td>
+                        <td>@announcement.Creator?.Email</td>
+                        <td data-i18n="@(announcement.IsGlobal ? "admin.yes" : "admin.no")">@(announcement.IsGlobal ? "Yes" : "No")</td>
+                        <td>@announcement.Contest?.Name</td>
+                        <td>@(announcement.ExpiresAt?.ToString("yyyy-MM-dd HH:mm") ?? "Never")</td>
+                        <td data-i18n="@(announcement.IsActive ? "admin.yes" : "admin.no")">@(announcement.IsActive ? "Yes" : "No")</td>
+                        <td>@announcement.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@announcement.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            <a asp-page="Delete" asp-route-id="@announcement.Id" class="btn btn-sm btn-delete" data-i18n="common.delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+@page
+@model algotournament.Pages.Rankings.IndexModel
+@{
+    ViewData["Title"] = "rankings.global";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="rankings.title">rankings</span></h1>
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="rankings.rank">Rank</th>
+                <th data-i18n="rankings.user">User</th>
+                <th data-i18n="rankings.rating">Rating</th>
+                <th data-i18n="rankings.problems_solved">Problems Solved</th>
+                <th data-i18n="rankings.contests_participated">Contests Participated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Users.Any())
+            {
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Rank</td>
+                        <td style="font-weight: 700;">@user.Handle</td>
+                        <td>@user.Rating</td>
+                        <td>@user.ProblemsSolved</td>
+                        <td>@user.ContestsParticipated</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="font-weight: 700; text-align: center;" data-i18n="empty.no_users_ranked">No users ranked yet.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

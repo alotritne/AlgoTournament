@@ -1,0 +1,121 @@
+/* Language Switcher Styles - Pixel Art Design */
+.language-switcher {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.lang-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--text-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0 var(--text-color);
+    outline: none;
+}
+
+.lang-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--text-color);
+}
+
+.lang-button:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.lang-button.active {
+    background: var(--text-color);
+    color: var(--bg-color);
+    box-shadow: 2px 2px 0 var(--text-color);
+}
+
+.lang-button.active:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--text-color);
+}
+
+.lang-flag {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.lang-code {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .language-switcher {
+        gap: 0.25rem;
+        margin-left: 0.5rem;
+    }
+
+    .lang-button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        border-width: 2px;
+        box-shadow: 1px 1px 0 var(--text-color);
+    }
+
+    .lang-button:hover {
+        box-shadow: 2px 2px 0 var(--text-color);
+    }
+
+    .lang-button.active {
+        box-shadow: 1px 1px 0 var(--text-color);
+    }
+
+    .lang-button.active:hover {
+        box-shadow: 2px 2px 0 var(--text-color);
+    }
+
+    .lang-flag {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .lang-button {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .lang-flag {
+        font-size: 0.9rem;
+    }
+}
+
+/* Translation badge styles */
+.translation-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--warning-bg);
+    color: var(--warning-text);
+    border: 2px solid var(--warning-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: 1px 1px 0 var(--warning-text);
+}
+
+.translation-badge::before {
+    content: "🔄";
+}

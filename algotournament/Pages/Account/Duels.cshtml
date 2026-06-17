@@ -1,0 +1,48 @@
+@page
+@model algotournament.Pages.Account.DuelsModel
+@{
+    ViewData["Title"] = "duels.history";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.history">duel history</span></h1>
+</div>
+
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="dashboard.created_at">Date</th>
+                <th data-i18n="duels.opponent">Opponent</th>
+                <th data-i18n="problems.title">Problem</th>
+                <th data-i18n="duels.result">Result</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.History.Any())
+            {
+                @foreach (var item in Model.History)
+                {
+                    <tr>
+                        <td>@item.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td style="font-weight: 700;">@item.OpponentHandle</td>
+                        <td>@item.ProblemTitle</td>
+                        <td>@item.Result</td>
+                        <td><a asp-page="/Duels/Result" asp-route-id="@item.MatchId" style="font-weight: 700;" data-i18n="common.view">View</a></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="font-weight: 700; text-align: center;" data-i18n="duels.no_matches">No duel matches yet.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top: 1.5rem;">
+    <a asp-page="/Duels/Create" class="btn btn-primary" data-i18n="duels.create">Create Duel</a>
+</div>

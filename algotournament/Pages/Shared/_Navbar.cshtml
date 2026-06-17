@@ -1,0 +1,127 @@
+@using Microsoft.AspNetCore.Identity
+@using algotournament.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<header class="navbar">
+    <div class="logo">
+        <a asp-page="/Index" style="text-decoration: none; color: inherit;" data-i18n="layout.site_title">ALGO.TOURNAMENT 2.0</a>
+    </div>
+    
+    <!-- Hamburger Menu Button (Mobile) -->
+    <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <nav class="nav-links" id="navLinks">
+        <a asp-page="/Contests/Index" data-i18n="nav.contests">Contests</a>
+        <a asp-page="/Problems/Index" data-i18n="nav.problems">Problems</a>
+        <div class="nav-dropdown">
+            <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" id="duelsToggle">
+                <span data-i18n="nav.duels">Duels</span> <span class="dropdown-icon">▾</span>
+            </button>
+        </div>
+        <a asp-page="/Rankings/Index" data-i18n="nav.rankings">Rankings</a>
+        <a asp-page="/Discussions/Index" data-i18n="nav.discussions">Discussions</a>
+        <a asp-page="/Blog/Index" data-i18n="nav.blog">Blog</a>
+        
+        @await Html.PartialAsync("_LanguageSwitcher")
+        
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var isAdmin = await UserManager.IsInRoleAsync(user, "SuperAdmin") || await UserManager.IsInRoleAsync(user, "Admin");
+            
+            if (isAdmin)
+            {
+                <a asp-page="/Admin/Dashboard" style="color: var(--accent-color); font-weight: bold;" data-i18n="nav.admin">Admin</a>
+            }
+            
+            <a asp-page="/Account/Dashboard" class="btn btn-secondary" style="padding: 0.3rem 1rem;">@(user?.Handle ?? User.Identity?.Name)</a>
+            <form method="post" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" style="display: inline;">
+                <button type="submit" class="btn btn-secondary" style="padding: 0.3rem 1rem;" data-i18n="nav.logout">Logout</button>
+            </form>
+        }
+        else
+        {
+            <a asp-page="/Account/Login" class="login-btn" data-i18n="nav.login">Login</a>
+        }
+    </nav>
+</header>
+
+<!-- Dropdown menu rendered at body level -->
+<div id="duelsDropdownMenu" class="nav-dropdown-menu">
+    <div class="nav-dropdown-menu-inner">
+        <a asp-page="/Duels/Create" data-i18n="nav.create_duel">create duel</a>
+        <a asp-page="/Duels/Join" data-i18n="nav.join_duel">join duel</a>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a asp-page="/Account/Duels" data-i18n="nav.history">history</a>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburgerMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+        }
+        
+        // Duels Dropdown
+        const toggle = document.getElementById('duelsToggle');
+        const menu = document.getElementById('duelsDropdownMenu');
+        
+        if (!toggle || !menu) return;
+        
+        function positionMenu() {
+            const rect = toggle.getBoundingClientRect();
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+        }
+        
+        toggle.addEventListener('mouseenter', function() {
+            positionMenu();
+            menu.style.display = 'block';
+        });
+        
+        toggle.addEventListener('mouseleave', function(e) {
+            // Check if mouse is moving to the menu
+            const menuRect = menu.getBoundingClientRect();
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Allow a small delay to move to menu
+            setTimeout(() => {
+                const menuRectAfter = menu.getBoundingClientRect();
+                if (x < menuRectAfter.left || x > menuRectAfter.right || y < menuRectAfter.top || y > menuRectAfter.bottom) {
+                    menu.style.display = 'none';
+                }
+            }, 100);
+        });
+        
+        menu.addEventListener('mouseenter', function() {
+            menu.style.display = 'block';
+        });
+        
+        menu.addEventListener('mouseleave', function() {
+            menu.style.display = 'none';
+        });
+        
+        window.addEventListener('scroll', function() {
+            menu.style.display = 'none';
+        });
+        
+        window.addEventListener('resize', function() {
+            menu.style.display = 'none';
+        });
+    });
+</script>

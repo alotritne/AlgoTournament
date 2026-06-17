@@ -1,0 +1,55 @@
+@page
+@model algotournament.Pages.Admin.RejudgeModel
+@{
+    ViewData["Title"] = "admin.rejudge";
+}
+
+<div class="container mt-4">
+    <h1 data-i18n="admin.rejudge">Rejudge</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 data-i18n="admin.rejudge_submission">Rejudge Submission</h3>
+            <form method="post" asp-page-handler="RejudgeSubmission">
+                <div class="form-group mb-3">
+                    <label for="submissionId" data-i18n="admin.submission_id">Submission ID</label>
+                    <input type="number" id="submissionId" name="submissionId" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary" data-i18n="admin.rejudge_submission">Rejudge Submission</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 data-i18n="admin.rejudge_problem">Rejudge Problem</h3>
+            <form method="post" asp-page-handler="RejudgeProblem">
+                <div class="form-group mb-3">
+                    <label for="problemId" data-i18n="admin.problem_id">Problem ID</label>
+                    <input type="number" id="problemId" name="problemId" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary" data-i18n="admin.rejudge_problem">Rejudge Problem</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <h3 data-i18n="admin.rejudge_contest">Rejudge Contest</h3>
+            <form method="post" asp-page-handler="RejudgeContest">
+                <div class="form-group mb-3">
+                    <label for="contestId" data-i18n="admin.contest_id">Contest ID</label>
+                    <input type="number" id="contestId" name="contestId" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary" data-i18n="admin.rejudge_contest">Rejudge Contest</button>
+            </form>
+        </div>
+    </div>
+    
+    @if (Model.Message != null)
+    {
+        <div class="alert alert-info mt-3">
+            @Model.Message
+        </div>
+    }
+</div>

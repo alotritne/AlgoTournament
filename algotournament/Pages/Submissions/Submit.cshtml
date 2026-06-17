@@ -1,0 +1,67 @@
+@page
+@model SubmitModel
+@{
+    ViewData["Title"] = "Submit Solution";
+}
+
+@using algotournament.Models
+
+<form method="post" class="submission-page-form">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="editor-validation-summary"></div>
+    }
+    
+    <!-- Code Editor Section -->
+    <section class="editor-section">
+        <!-- Monaco Editor -->
+        <div class="monaco-editor-wrapper" data-monaco-textarea="sourceCode" data-monaco-mode="cpp" data-monaco-autosave-key="submission-problem-@Model.Problem?.Id" data-monaco-upload-input="fileInput" data-monaco-label="Submission Code">
+            <textarea id="sourceCode" asp-for="Input.SourceCode" style="display: none;"></textarea>
+        </div>
+    </section>
+
+    <!-- Submit Controls Section -->
+    <aside class="controls-section">
+        <div class="controls-header">
+            @if (Model.Problem != null)
+            {
+                <h2>@Model.Problem.Id. @Model.Problem.TitleVi</h2>
+                <a asp-page="/Problems/Detail" asp-route-id="@Model.Problem.Id">&larr; Back to Problem</a>
+            }
+            else
+            {
+                <h2>Submit Solution</h2>
+            }
+        </div>
+
+        <div class="controls-content">
+            <div class="form-group">
+                <label asp-for="Input.Language" class="form-label">Language</label>
+                <select asp-for="Input.Language" class="brutalist-input" style="width: 100%; appearance: auto;">
+                    <option value="@ProgrammingLanguage.Cpp17">GNU C++17</option>
+                    <option value="@ProgrammingLanguage.Cpp20" selected>GNU C++20</option>
+                </select>
+                <span asp-validation-for="Input.Language" class="text-danger"></span>
+            </div>
+
+            <div class="form-group submit-button-group">
+                <button type="submit" class="btn btn-primary btn-block">Submit Solution</button>
+            </div>
+            
+            @if (Model.Problem != null)
+            {
+                <div class="submit-info">
+                    <p>Submitting for: <span>@Model.Problem.Id. @Model.Problem.TitleVi</span></p>
+                    <p>Time Limit: @(Model.Problem.TimeLimitMs / 1000.0)s | Memory Limit: @Model.Problem.MemoryLimitMB MB</p>
+                </div>
+            }
+        </div>
+    </aside>
+</form>
+
+<input type="file" id="fileInput" style="display: none;" accept=".cpp,.cc,.cxx,.h,.hpp" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/vscode-editor.js" asp-append-version="true"></script>
+}

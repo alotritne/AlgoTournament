@@ -1,0 +1,55 @@
+@page
+@model algotournament.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_users";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.manage_users">Manage Users</h1>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th data-i18n="admin.handle">Handle</th>
+                    <th data-i18n="auth.email">Email</th>
+                    <th data-i18n="rankings.rating">Rating</th>
+                    <th data-i18n="rankings.problems_solved">Problems Solved</th>
+                    <th data-i18n="dashboard.contests">Contests</th>
+                    <th data-i18n="admin.is_banned">Is Banned</th>
+                    <th data-i18n="problems.created_at">Created At</th>
+                    <th data-i18n="admin.actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Handle</td>
+                        <td>@user.Email</td>
+                        <td>@user.Rating</td>
+                        <td>@user.ProblemsSolved</td>
+                        <td>@user.ContestsParticipated</td>
+                        <td data-i18n="@($"admin.{(user.IsBanned ? "yes" : "no")}")">@(user.IsBanned ? "Yes" : "No")</td>
+                        <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td class="table-actions">
+                            <a asp-page="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-edit" data-i18n="common.edit">Edit</a>
+                            @if (user.IsBanned)
+                            {
+                                <a asp-page="Unlock" asp-route-id="@user.Id" class="btn btn-sm" style="background-color: #4CAF50; color: #fff;" data-i18n="admin.unlock">Unlock</a>
+                            }
+                            else
+                            {
+                                <a asp-page="Lock" asp-route-id="@user.Id" class="btn btn-sm btn-delete" data-i18n="admin.lock">Lock</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

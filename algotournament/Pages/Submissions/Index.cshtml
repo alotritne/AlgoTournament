@@ -1,0 +1,63 @@
+@page
+@model algotournament.Pages.Submissions.IndexModel
+@using algotournament.Models
+@{
+    ViewData["Title"] = "Submissions";
+}
+
+<div class="container mt-4">
+    <h1>Submissions</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Problem</th>
+                        <th>Status</th>
+                        <th>Language</th>
+                        <th>Score</th>
+                        <th>Time</th>
+                        <th>Submitted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var submission in Model.Submissions)
+                    {
+                        <tr>
+                            <td><a asp-page="Status" asp-route-id="@submission.Id">@submission.Id</a></td>
+                            <td>@submission.User?.Handle</td>
+                            <td>@submission.Problem?.TitleVi</td>
+                            <td>
+                                <span class="badge @(GetStatusBadgeClass(submission.Status))">@submission.Status</span>
+                            </td>
+                            <td>@submission.Language</td>
+                            <td>@submission.Score / 100</td>
+                            <td>@submission.ExecutionTimeMs ms</td>
+                            <td>@submission.SubmittedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(SubmissionStatus status)
+    {
+        return status switch
+        {
+            SubmissionStatus.Accepted => "bg-success",
+            SubmissionStatus.WrongAnswer => "bg-danger",
+            SubmissionStatus.RuntimeError => "bg-danger",
+            SubmissionStatus.CompilationError => "bg-danger",
+            SubmissionStatus.TimeLimitExceeded => "bg-warning",
+            SubmissionStatus.MemoryLimitExceeded => "bg-warning",
+            SubmissionStatus.PresentationError => "bg-warning",
+            _ => "bg-secondary"
+        };
+    }
+}

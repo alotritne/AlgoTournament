@@ -1,0 +1,119 @@
+@page
+@model algotournament.Pages.Admin.Duels.IndexModel
+@{
+    ViewData["Title"] = "admin.manage_duels";
+}
+
+@await Html.PartialAsync("_AdminNavbar")
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="admin.manage_duels">admin::duels</span></h1>
+</div>
+
+<h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.matches">matches</span></h2>
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="admin.id">ID</th>
+                <th data-i18n="duels.room">Room</th>
+                <th data-i18n="problems.title">Problem</th>
+                <th data-i18n="submissions.status">Status</th>
+                <th data-i18n="duels.score">Score</th>
+                <th data-i18n="dashboard.created_at">Started</th>
+                <th data-i18n="admin.actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Matches.Any())
+            {
+                @foreach (var match in Model.Matches)
+                {
+                    <tr>
+                        <td>@match.Id</td>
+                        <td>@match.Room.RoomCode</td>
+                        <td>@match.Room.Problem.TitleVi</td>
+                        <td>@match.Status</td>
+                        <td>@match.FinalScorePlayer1 - @match.FinalScorePlayer2</td>
+                        <td>@match.StartedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <form method="post" asp-page-handler="ForceEnd" style="display:inline;">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="duels.force_end">Force End</button>
+                            </form>
+                            <form method="post" asp-page-handler="Recalculate" style="display:inline;">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="duels.recalc_result">Recalc Result</button>
+                            </form>
+                            <form method="post" asp-page-handler="DeleteMatch" style="display:inline;" onsubmit="return confirm('Delete this match?');">
+                                <input type="hidden" name="matchId" value="@match.Id" />
+                                <button type="submit" class="btn btn-secondary" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="common.delete">Delete</button>
+                            </form>
+                            <a asp-page="/Duels/Result" asp-route-id="@match.Id" style="font-weight:700;" data-i18n="common.view">View</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="7" style="font-weight:700;text-align:center;" data-i18n="empty.no_matches">No matches yet.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 class="section-title" style="margin-top:2rem;"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.rooms">rooms</span></h2>
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="duels.code">Code</th>
+                <th data-i18n="duels.host">Host</th>
+                <th data-i18n="problems.title">Problem</th>
+                <th data-i18n="submissions.status">Status</th>
+                <th data-i18n="admin.duration">Duration</th>
+                <th data-i18n="dashboard.created_at">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model.Rooms)
+            {
+                <tr>
+                    <td style="font-weight:700;">@room.RoomCode</td>
+                    <td>@room.HostUser.Handle</td>
+                    <td>@room.Problem.TitleVi</td>
+                    <td>@room.Status</td>
+                    <td>@room.DurationMinutes <span data-i18n="contests.minutes">min</span></td>
+                    <td>@room.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 class="section-title" style="margin-top:2rem;"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.participants">participants</span></h2>
+<div class="table-container">
+    <table class="brutalist-table">
+        <thead>
+            <tr>
+                <th data-i18n="duels.room">Room</th>
+                <th data-i18n="duels.player">Player</th>
+                <th data-i18n="duels.slot">Slot</th>
+                <th data-i18n="duels.ready">Ready</th>
+                <th data-i18n="dashboard.created_at">Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Participants)
+            {
+                <tr>
+                    <td>@p.Room.RoomCode</td>
+                    <td>@p.User.Handle</td>
+                    <td>@p.SlotIndex</td>
+                    <td data-i18n="@(p.IsReady ? "admin.yes" : "admin.no")">@(p.IsReady ? "Yes" : "No")</td>
+                    <td>@p.JoinedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

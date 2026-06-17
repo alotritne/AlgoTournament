@@ -1,0 +1,147 @@
+@page
+@model DashboardModel
+@using algotournament.Models
+@{
+    ViewData["Title"] = "dashboard.title";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.title">dashboard</span></h1>
+    <div style="font-weight:700;">
+    <span data-i18n="dashboard.welcome_back">Welcome back</span>
+    <a asp-page="/Account/Profile"
+       style="color: var(--accent-color); text-decoration:none;">
+        @Model.CurrentUser?.Handle
+    </a>
+</div>
+</div>
+
+<div class="layout-grid" style="grid-template-columns: 2fr 1fr;">
+    <div class="main-column">
+        <section style="margin-bottom: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 class="section-title" style="margin: 0;"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.recent_submissions">recent submissions</span></h2>
+                <a asp-page="/Account/Submissions" class="btn btn-secondary" style="padding: 0.3rem 1rem; font-size: 0.8rem;" data-i18n="dashboard.show_all">Show All</a>
+            </div>
+            @if (Model.RecentSubmissions != null && Model.RecentSubmissions.Count > 0)
+            {
+                <table class="brutalist-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="dashboard.time">Time</th>
+                            <th data-i18n="dashboard.problem">Problem</th>
+                            <th data-i18n="dashboard.lang">Lang</th>
+                            <th data-i18n="dashboard.verdict">Verdict</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var submission in Model.RecentSubmissions.Take(5))
+                        {
+                            <tr>
+                                <td>@Html.Raw(TimeAgo(submission.SubmittedAt))</td>
+                                <td><a asp-page="/Problems/Detail" asp-route-id="@submission.ProblemId">@(submission.Problem?.TitleVi ?? $"Problem #{submission.ProblemId}")</a></td>
+                                <td>@submission.Language.ToString().Replace("Cpp", "C++")</td>
+                                <td style="color: @GetVerdictColor(submission.Status); font-weight: 800;">@submission.Status.ToString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p style="font-weight: 700;" data-i18n="dashboard.no_submissions_yet">No submissions yet.</p>
+            }
+        </section>
+
+        <section>
+            <h2 class="section-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.statistics">statistics</span></h2>
+            <div class="account-dashboard-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div style="border: var(--border-width) solid var(--text-color); background: #fff; padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--accent-color);">@Model.CurrentUser?.ProblemsSolved</div>
+                    <div style="font-weight: 700; text-transform: uppercase; font-size: 0.8rem;" data-i18n="dashboard.problems_solved">Problems Solved</div>
+                </div>
+                <div style="border: var(--border-width) solid var(--text-color); background: #fff; padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--accent-color);">@Model.CurrentUser?.Rating</div>
+                    <div style="font-weight: 700; text-transform: uppercase; font-size: 0.8rem;" data-i18n="dashboard.rating">Rating</div>
+                </div>
+                <div style="border: var(--border-width) solid var(--text-color); background: #fff; padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--accent-color);">@Model.CurrentUser?.ContestsParticipated</div>
+                    <div style="font-weight: 700; text-transform: uppercase; font-size: 0.8rem;" data-i18n="dashboard.contests">Contests</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <aside class="sidebar">
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.profile">profile</span></h3>
+            <div style="padding: 2rem; text-align: center;">
+                <div style="font-size: 4rem; font-weight: 800; color: var(--accent-color); line-height: 1;">@Model.CurrentUser?.Rating</div>
+                <a asp-page="/Account/Profile" style="font-weight: 700; text-transform: uppercase; text-decoration: none; color: inherit;">@Model.CurrentUser?.Handle</a>
+                <div style="margin-top: 1rem;">
+                    <a asp-page="/Account/EditProfile" class="btn btn-secondary btn-block" data-i18n="dashboard.edit_profile">Edit Profile</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="sidebar-card">
+            <h3 class="sidebar-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="dashboard.upcoming_contests">upcoming contests</span></h3>
+            @if (Model.UpcomingContests != null && Model.UpcomingContests.Count > 0)
+            {
+                foreach (var contest in Model.UpcomingContests)
+                {
+                    <article class="contest-card" style="margin-bottom: 1rem;">
+                        <div class="contest-date">
+                            <span class="month">@contest.StartTime.ToString("MMM").ToUpper()</span>
+                            <span class="day">@contest.StartTime.Day</span>
+                        </div>
+                        <div class="contest-details">
+                            <h3>@contest.Name</h3>
+                            <p style="font-size: 0.8rem;">@contest.StartTime.ToString("MMM/dd/yyyy HH:mm")</p>
+                        </div>
+                        <div class="contest-action">
+                            <a asp-page="/Contests/Detail" asp-route-id="@contest.Id" class="link-action" data-i18n="dashboard.register">Register &rarr;</a>
+                        </div>
+                    </article>
+                }
+            }
+            else
+            {
+                <p style="padding: 1rem; font-weight: 700;" data-i18n="dashboard.no_upcoming_contests">No upcoming contests.</p>
+            }
+        </section>
+    </aside>
+</div>
+
+@functions {
+    string GetVerdictColor(SubmissionStatus status)
+    {
+        return status switch
+        {
+            SubmissionStatus.Accepted => "#228b22",
+            SubmissionStatus.WrongAnswer => "red",
+            SubmissionStatus.CompilationError => "orange",
+            SubmissionStatus.RuntimeError => "orange",
+            SubmissionStatus.TimeLimitExceeded => "orange",
+            SubmissionStatus.MemoryLimitExceeded => "orange",
+            _ => "var(--text-color)"
+        };
+    }
+
+    string TimeAgo(DateTime dateTime)
+    {
+        var span = DateTime.UtcNow - dateTime;
+        if (span.TotalMinutes < 1) return "<span data-i18n=\"time.just_now\">just now</span>";
+        if (span.TotalMinutes < 60) return $"<span data-i18n=\"time.mins_ago\" data-number=\"{(int)span.TotalMinutes}\">just now</span>";
+        if (span.TotalHours < 24) return $"<span data-i18n=\"time.hours_ago\" data-number=\"{(int)span.TotalHours}\">just now</span>";
+        return $"<span data-i18n=\"time.days_ago\" data-number=\"{(int)span.TotalDays}\">just now</span>";
+    }
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof i18n !== 'undefined') {
+            i18n.applyTranslations();
+        }
+    });
+</script>

@@ -1,0 +1,85 @@
+@page "{id:int}"
+@model algotournament.Pages.Duels.ResultModel
+@{
+    ViewData["Title"] = "duels.result";
+    var isDraw = Model.Result?.IsDraw ?? false;
+    var iAmWinner = Model.Result?.WinnerUserId == Model.Result?.CurrentUserId;
+    var myPlayer = Model.Result?.Player1.UserId == Model.Result?.CurrentUserId
+        ? Model.Result.Player1 : Model.Result?.Player2;
+    var oppPlayer = Model.Result?.Player1.UserId == Model.Result?.CurrentUserId
+        ? Model.Result?.Player2 : Model.Result?.Player1;
+}
+
+@if (Model.Result != null)
+{
+    <div class="duel-result-banner @(isDraw ? "duel-draw" : iAmWinner ? "duel-win" : "duel-lose")">
+        @if (isDraw)
+        {
+            <h1 data-i18n="duels.draw">DRAW</h1>
+            <p><span data-i18n="duels.draw_message">No one solved</span> @Model.Result.ProblemTitle <span data-i18n="duels.draw_message_suffix">in time</span></p>
+        }
+        else if (iAmWinner)
+        {
+            <h1 data-i18n="duels.winner">WINNER</h1>
+            <p><span data-i18n="duels.winner_message_prefix">SOLVED FIRST —</span> @Model.Result.LoserHandle <span data-i18n="duels.winner_message_suffix">did not solve first</span></p>
+        }
+        else
+        {
+            <h1 data-i18n="duels.loser">LOSER</h1>
+            <p><span data-i18n="duels.loser_message_prefix">DID NOT SOLVE FIRST —</span> @(Model.Result.WinnerHandle ?? "Opponent") <span data-i18n="duels.loser_message_suffix">solved first</span></p>
+        }
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title"><span class="prompt-symbol">&gt;</span> <span data-i18n="duels.match_summary">match summary</span></h1>
+    </div>
+
+    <div class="table-container">
+        <table class="brutalist-table">
+            <thead>
+                <tr>
+                    <th data-i18n="duels.stat">Stat</th>
+                    <th>@(myPlayer?.Handle ?? "You")</th>
+                    <th>@(oppPlayer?.Handle ?? "Opponent")</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-i18n="duels.result">Result</td>
+                    <td style="font-weight: 700;">@(isDraw ? "Draw" : iAmWinner ? "Win" : "Loss")</td>
+                    <td style="font-weight: 700;">@(isDraw ? "Draw" : iAmWinner ? "Loss" : "Win")</td>
+                </tr>
+                <tr>
+                    <td data-i18n="duels.runtime_best_ac">Runtime (best AC)</td>
+                    <td>@(myPlayer?.RuntimeMs?.ToString() ?? "—") ms</td>
+                    <td>@(oppPlayer?.RuntimeMs?.ToString() ?? "—") ms</td>
+                </tr>
+                <tr>
+                    <td data-i18n="duels.memory_best_ac">Memory (best AC)</td>
+                    <td>@(myPlayer?.MemoryKb?.ToString() ?? "—") KB</td>
+                    <td>@(oppPlayer?.MemoryKb?.ToString() ?? "—") KB</td>
+                </tr>
+                <tr>
+                    <td data-i18n="duels.wrong_attempts">Wrong Attempts</td>
+                    <td>@myPlayer?.WrongAttempts</td>
+                    <td>@oppPlayer?.WrongAttempts</td>
+                </tr>
+                <tr>
+                    <td data-i18n="duels.submission_count">Submission Count</td>
+                    <td>@myPlayer?.SubmissionCount</td>
+                    <td>@oppPlayer?.SubmissionCount</td>
+                </tr>
+                <tr>
+                    <td data-i18n="duels.accepted_at">Accepted At</td>
+                    <td>@(myPlayer?.AcceptedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "—")</td>
+                    <td>@(oppPlayer?.AcceptedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "—")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a asp-page="./Create" class="btn btn-primary" data-i18n="duels.rematch">Rematch</a>
+        <a asp-page="/Account/Duels" class="btn btn-secondary" data-i18n="duels.history">Duel History</a>
+    </div>
+}

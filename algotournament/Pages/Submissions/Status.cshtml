@@ -1,0 +1,217 @@
+@page
+@model algotournament.Pages.Submissions.StatusModel
+@using algotournament.Models
+@{
+    ViewData["Title"] = "Submission Status";
+    var currentStatus = Model.Submission?.Status.ToString();
+    var isFinalStatus = Model.Submission != null && new[] { "Accepted", "WrongAnswer", "CompilationError", "RuntimeError", "TimeLimitExceeded", "MemoryLimitExceeded", "PresentationError" }.Contains(currentStatus);
+}
+
+<style>
+    @@keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<div class="container mt-4">
+    <h1>Submission Status</h1>
+    
+    @if (Model.Submission == null)
+    {
+        <div class="alert alert-warning">Submission not found</div>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2>Submission #@Model.Submission.Id</h2>
+                <dl class="row">
+                    <dt class="col-sm-3">User</dt>
+                    <dd class="col-sm-9">@Model.Submission.User?.Handle</dd>
+                    
+                    <dt class="col-sm-3">Problem</dt>
+                    <dd class="col-sm-9">@Model.Submission.Problem?.TitleVi</dd>
+                    
+                    <dt class="col-sm-3">Language</dt>
+                    <dd class="col-sm-9">@Model.Submission.Language</dd>
+                    
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge @(GetStatusBadgeClass(Model.Submission.Status))">@Model.Submission.Status</span>
+                    </dd>
+                    
+                    <dt class="col-sm-3">Score</dt>
+                    <dd class="col-sm-9">@Model.Submission.Score / 100</dd>
+                    
+                    <dt class="col-sm-3">Execution Time</dt>
+                    <dd class="col-sm-9">@Model.Submission.ExecutionTimeMs ms</dd>
+                    
+                    <dt class="col-sm-3">Submitted At</dt>
+                    <dd class="col-sm-9">@Model.Submission.SubmittedAt.ToString("yyyy-MM-dd HH:mm:ss")</dd>
+                    
+                    @if (Model.Submission.JudgedAt.HasValue)
+                    {
+                        <dt class="col-sm-3">Judged At</dt>
+                        <dd class="col-sm-9">@Model.Submission.JudgedAt.Value.ToString("yyyy-MM-dd HH:mm:ss")</dd>
+                    }
+                </dl>
+                
+                @if (!string.IsNullOrEmpty(Model.Submission.CompileError))
+                {
+                    <div class="alert alert-danger">
+                        <h5>Compilation Error</h5>
+                        <pre>@Model.Submission.CompileError</pre>
+                    </div>
+                }
+                
+                @if (!string.IsNullOrEmpty(Model.Submission.RuntimeError))
+                {
+                    <div class="alert alert-danger">
+                        <h5>Runtime Error</h5>
+                        <pre>@Model.Submission.RuntimeError</pre>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        @if (Model.Submission.Results.Any())
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h3>Test Case Results</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Test Case</th>
+                                <th>Status</th>
+                                <th>Execution Time</th>
+                                <th>Memory Used</th>
+                                <th>Output Preview</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var result in Model.Submission.Results.OrderBy(r => r.TestCase.Order))
+                            {
+                                <tr>
+                                    <td>@result.TestCase.Order</td>
+                                    <td>
+                                        <span class="badge @(GetStatusBadgeClass(result.Status))">@result.Status</span>
+                                    </td>
+                                    <td>@result.ExecutionTimeMs ms</td>
+                                    <td>@result.MemoryUsedKB KB</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(result.Output))
+                                        {
+                                            <span class="text-muted">@(result.Output.Length > 50 ? result.Output.Substring(0, 50) + "..." : result.Output)</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        
+        <div class="mt-3">
+            <a asp-page="Index" class="btn btn-secondary">Back to Submissions</a>
+            <a asp-page="/Problems/Detail" asp-route-id="@Model.Submission.ProblemId" class="btn btn-primary">Back to Problem</a>
+            <button type="button" class="btn btn-secondary" onclick="toggleCodeView()" style="margin-left: 0.5rem;">View Source Code</button>
+        </div>
+        
+        <div id="codeView" style="display: none; margin-top: 1rem;">
+            <div style="border: 2px solid var(--text-color); background: #fff; box-shadow: 4px 4px 0 var(--text-color);">
+                <div style="padding: 1rem; border-bottom: 2px solid var(--text-color); background: #e5dfd1; font-weight: 800; text-transform: uppercase;">
+                    Source Code
+                </div>
+                <pre style="padding: 1rem; margin: 0; background: #282c34; color: #abb2bf; overflow-x: auto; white-space: pre-wrap; font-family: monospace;">@Model.Submission.SourceCode</pre>
+            </div>
+        </div>
+        
+        @if (!isFinalStatus)
+        {
+            <div style="margin-top: 3rem;">
+                <div style="padding: 1rem; border: 2px solid var(--accent-color); background: #e5dfd1; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="animation: spin 1s linear infinite;">⟳</span>
+                    <span>Auto-refreshing status...</span>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script>
+    function toggleCodeView() {
+        const codeView = document.getElementById('codeView');
+        if (codeView.style.display === 'none') {
+            codeView.style.display = 'block';
+        } else {
+            codeView.style.display = 'none';
+        }
+    }
+</script>
+
+@if (Model.Submission != null && !isFinalStatus)
+{
+    <script>
+        (function() {
+            const submissionId = @Model.Submission.Id;
+            const currentStatus = '@currentStatus';
+            const finalStatuses = ['Accepted', 'WrongAnswer', 'CompilationError', 'RuntimeError', 'TimeLimitExceeded', 'MemoryLimitExceeded', 'PresentationError'];
+            
+            function pollStatus() {
+                fetch(`/Submissions/Status?id=${submissionId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/html'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Parse the HTML to extract the new status
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newStatusElement = doc.querySelector('dd:has(.badge)');
+                    
+                    if (newStatusElement) {
+                        const newStatus = newStatusElement.textContent.trim();
+                        
+                        // If status changed or reached final state, reload the page
+                        if (newStatus !== currentStatus || finalStatuses.includes(newStatus)) {
+                            window.location.reload();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error polling status:', error);
+                });
+            }
+            
+            // Poll every 2 seconds
+            const intervalId = setInterval(pollStatus, 2000);
+            
+            // Stop polling after 5 minutes (safety timeout)
+            setTimeout(() => {
+                clearInterval(intervalId);
+            }, 300000);
+        })();
+    </script>
+}
+
+@functions {
+    string GetStatusBadgeClass(SubmissionStatus status)
+    {
+        return status switch
+        {
+            SubmissionStatus.Accepted => "bg-success",
+            SubmissionStatus.WrongAnswer => "bg-danger",
+            SubmissionStatus.RuntimeError => "bg-danger",
+            SubmissionStatus.CompilationError => "bg-danger",
+            SubmissionStatus.TimeLimitExceeded => "bg-warning",
+            SubmissionStatus.MemoryLimitExceeded => "bg-warning",
+            SubmissionStatus.PresentationError => "bg-warning",
+            _ => "bg-secondary"
+        };
+    }
+}

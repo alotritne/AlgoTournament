@@ -1,0 +1,69 @@
+@page
+@model algotournament.Pages.Admin.Announcements.EditModel
+@{
+    ViewData["Title"] = "admin.edit_announcement";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.edit_announcement">Edit Announcement</h1>
+    </div>
+    
+    <div class="admin-form-container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Announcement.Id" />
+            
+            <div class="form-group mb-3">
+                <label asp-for="Announcement.Title" class="control-label" data-i18n="blog.title"></label>
+                <input asp-for="Announcement.Title" class="form-control" />
+                <span asp-validation-for="Announcement.Title" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Announcement.Content" class="control-label" data-i18n="discussion.content"></label>
+                <textarea asp-for="Announcement.Content" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="Announcement.Content" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Announcement.ContestId" class="control-label" data-i18n="admin.contest_optional">Contest (Optional)</label>
+                <select asp-for="Announcement.ContestId" class="form-control" asp-items="Model.Contests">
+                    <option value="" data-i18n="admin.global_announcement">-- Global Announcement --</option>
+                </select>
+                <span asp-validation-for="Announcement.ContestId" class="text-danger"></span>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="form-group mb-3">
+                    <label asp-for="Announcement.ExpiresAt" class="control-label" data-i18n="admin.expires_at_optional">Expires At (Optional)</label>
+                    <input asp-for="Announcement.ExpiresAt" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Announcement.ExpiresAt" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="Announcement.IsActive" class="form-check-input" />
+                        <label asp-for="Announcement.IsActive" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    <input asp-for="Announcement.IsGlobal" class="form-check-input" />
+                    <label asp-for="Announcement.IsGlobal" class="form-check-label"></label>
+                </div>
+            </div>
+            
+            <div class="admin-form-actions">
+                <input type="submit" value="Save" class="btn btn-primary" data-i18n="common.save" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

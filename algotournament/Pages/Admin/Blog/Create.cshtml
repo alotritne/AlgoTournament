@@ -1,0 +1,45 @@
+@page
+@model algotournament.Pages.Admin.Blog.CreateModel
+@{
+    ViewData["Title"] = "admin.create_blog_post";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.create_blog_post">Create Blog Post</h1>
+    </div>
+
+    <div class="admin-form-container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="BlogPost.Title" class="control-label" data-i18n="blog.title"></label>
+                <input asp-for="BlogPost.Title" class="form-control" />
+                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="BlogPost.Content" class="control-label" data-i18n="discussion.content"></label>
+                <textarea asp-for="BlogPost.Content" class="form-control" rows="12"></textarea>
+                <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    <input asp-for="BlogPost.IsPublished" class="form-check-input" />
+                    <label asp-for="BlogPost.IsPublished" class="form-check-label"></label>
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <input type="submit" value="Create" class="btn btn-primary" data-i18n="common.create" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

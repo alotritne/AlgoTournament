@@ -1,0 +1,44 @@
+@page
+@model algotournament.Pages.Admin.Users.UnlockModel
+@{
+    ViewData["Title"] = "admin.unlock_user";
+}
+
+<div class="container mt-4">
+    <h1 data-i18n="admin.unlock_user">Unlock User</h1>
+    
+    <div class="alert alert-info">
+        <h3 data-i18n="admin.unlock_confirmation">Are you sure you want to unlock this user?</h3>
+        <p data-i18n="admin.unlock_warning">The user will be able to access the system again.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3" data-i18n="admin.handle">Handle</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.Handle</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.email">Email</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.Email</dd>
+                
+                <dt class="col-sm-3" data-i18n="rankings.rating">Rating</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.Rating</dd>
+                
+                <dt class="col-sm-3" data-i18n="rankings.problems_solved">Problems Solved</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.ProblemsSolved</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.contests_participated">Contests Participated</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.ContestsParticipated</dd>
+                
+                <dt class="col-sm-3" data-i18n="admin.ban_reason">Ban Reason</dt>
+                <dd class="col-sm-9">@Model.ApplicationUserModel.BanReason</dd>
+            </dl>
+            
+            <form method="post">
+                <input type="hidden" asp-for="ApplicationUserModel.Id" />
+                <input type="submit" value="Unlock" class="btn btn-success" data-i18n="admin.unlock" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

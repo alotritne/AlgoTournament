@@ -1,0 +1,83 @@
+@page
+@model algotournament.Pages.Admin.Contests.EditModel
+@{
+    ViewData["Title"] = "admin.edit_contest";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.edit_contest">Edit Contest</h1>
+    </div>
+    
+    <div class="admin-form-container">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Contest.Id" />
+            
+            <div class="form-group mb-3">
+                <label asp-for="Contest.Name" class="control-label" data-i18n="common.name"></label>
+                <input asp-for="Contest.Name" class="form-control" />
+                <span asp-validation-for="Contest.Name" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Contest.Description" class="control-label" data-i18n="common.description"></label>
+                <textarea asp-for="Contest.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Contest.Description" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Contest.TournamentId" class="control-label" data-i18n="admin.tournament"></label>
+                <select asp-for="Contest.TournamentId" class="form-control" asp-items="Model.Tournaments"></select>
+                <span asp-validation-for="Contest.TournamentId" class="text-danger"></span>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="form-group mb-3">
+                    <label asp-for="Contest.StartTime" class="control-label" data-i18n="admin.start_time"></label>
+                    <input asp-for="Contest.StartTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Contest.StartTime" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Contest.EndTime" class="control-label" data-i18n="admin.end_time"></label>
+                    <input asp-for="Contest.EndTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Contest.EndTime" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="admin-form-row">
+                <div class="form-group mb-3">
+                    <label asp-for="Contest.DurationMinutes" class="control-label" data-i18n="admin.duration"></label>
+                    <input asp-for="Contest.DurationMinutes" class="form-control" type="number" />
+                    <span asp-validation-for="Contest.DurationMinutes" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Contest.ScoringMode" class="control-label" data-i18n="admin.scoring_mode"></label>
+                    <select asp-for="Contest.ScoringMode" class="form-control">
+                        <option value="ACM">ACM</option>
+                        <option value="OI">OI</option>
+                    </select>
+                    <span asp-validation-for="Contest.ScoringMode" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="Contest.IsRated" class="form-check-input" />
+                        <label asp-for="Contest.IsRated" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-form-actions">
+                <input type="submit" value="Save" class="btn btn-primary" data-i18n="common.save" />
+                <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

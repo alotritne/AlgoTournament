@@ -1,0 +1,107 @@
+@page
+@model DetailModel
+@{
+    ViewData["Title"] = "problems.detail";
+    // Get current language from cookie or default to Vietnamese
+    var currentLanguage = Request.Cookies["preferredLanguage"] ?? "vi";
+}
+
+<div class="page-header" style="flex-direction: column; align-items: flex-start;">
+    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <h1 class="page-title"><span class="prompt-symbol">&gt;</span> @Model.Problem?.Id. @Model.Problem?.GetTitle(currentLanguage)</h1>
+            @if (Model.ShowTranslationBadge)
+            {
+                <span class="translation-badge" data-i18n="language.translation_coming_soon">Translation coming soon</span>
+            }
+        </div>
+        @if (Model.Problem != null)
+        {
+            <a asp-page="/Submissions/Submit" asp-route-problemId="@Model.Problem.Id" class="btn btn-primary" data-i18n="problems.submit_solution">Submit Solution</a>
+        }
+    </div>
+    @if (Model.Problem != null)
+    {
+        <div style="margin-top: 1rem;">
+            <span class="badge badge-unrated @GetDifficultyClass(Model.Problem.DifficultyRating)" data-i18n="problems.difficulty">Difficulty</span>: <span data-i18n="problems.difficulty_value">@Model.Problem.DifficultyRating</span>
+        </div>
+    }
+</div>
+
+<div class="tabs">
+    <a href="#" class="tab active" data-i18n="problems.statement">Statement</a>
+    <a asp-page="/Submissions/Index" asp-route-problemId="@Model.Problem?.Id" class="tab" data-i18n="problems.all_submissions">Submissions</a>
+    @* <a href="#" class="tab">Editorial</a>
+    <a href="#" class="tab">Discussion</a> *@
+</div>
+
+@if (Model.Problem != null)
+{
+    <div class="problem-content" style="background: #fff; padding: 2rem; border: var(--border-width) solid var(--text-color); box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--text-color); margin-bottom: 3rem;">
+        <div class="constraints" style="margin-bottom: 2rem; font-weight: 700; border-bottom: 2px dashed var(--text-color); padding-bottom: 1rem;">
+            <p><span data-i18n="problems.time_limit">Time limit</span>: @(Model.Problem.TimeLimitMs / 1000.0) <span data-i18n="problems.seconds">second(s)</span></p>
+            <p><span data-i18n="problems.memory_limit">Memory limit</span>: @Model.Problem.MemoryLimitMB <span data-i18n="problems.megabytes">megabyte(s)</span></p>
+            <p><span data-i18n="problems.input">Input</span>: <span data-i18n="problems.standard_input">standard input</span> | <span data-i18n="problems.output">Output</span>: <span data-i18n="problems.standard_output">standard output</span></p>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            @Html.Raw(Model.RenderMarkdown(Model.GetStatement()))
+        </div>
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem; text-transform: uppercase;" data-i18n="problems.input">Input</h3>
+        <div style="margin-bottom: 2rem;">
+            @Html.Raw(Model.RenderMarkdown(Model.GetInputDescription()))
+        </div>
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem; text-transform: uppercase;" data-i18n="problems.output">Output</h3>
+        <div style="margin-bottom: 2rem;">
+            @Html.Raw(Model.RenderMarkdown(Model.GetOutputDescription()))
+        </div>
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem; text-transform: uppercase;" data-i18n="problems.constraints">Constraints</h3>
+        <div style="margin-bottom: 2rem;">
+            @Html.Raw(Model.RenderMarkdown(Model.GetConstraints()))
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.GetExplanation()))
+        {
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem; text-transform: uppercase;" data-i18n="problems.explanation">Explanation</h3>
+            <div style="margin-bottom: 2rem;">
+                @Html.Raw(Model.RenderMarkdown(Model.GetExplanation()))
+            </div>
+        }
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem; text-transform: uppercase;" data-i18n="problems.sample_input">Examples</h3>
+        @if (Model.SampleTestCases != null && Model.SampleTestCases.Count > 0)
+        {
+            @foreach (var testCase in Model.SampleTestCases)
+            {
+                <div class="io-box" style="display: flex; gap: 2rem; margin-bottom: 1rem;">
+                    <div class="input-box" style="flex: 1; border: 2px solid var(--text-color); background: var(--bg-color);">
+                        <div style="font-weight: 800; border-bottom: 2px solid var(--text-color); padding: 0.5rem 1rem;" data-i18n="problems.sample_input">Input</div>
+                        <div style="padding: 1rem; font-family: monospace; white-space: pre-wrap;">@testCase.Input</div>
+                    </div>
+                    <div class="output-box" style="flex: 1; border: 2px solid var(--text-color); background: var(--bg-color);">
+                        <div style="font-weight: 800; border-bottom: 2px solid var(--text-color); padding: 0.5rem 1rem;" data-i18n="problems.sample_output">Output</div>
+                        <div style="padding: 1rem; font-family: monospace; white-space: pre-wrap;">@testCase.ExpectedOutput</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+
+@functions {
+    string GetDifficultyClass(int rating)
+    {
+        return rating switch
+        {
+            < 1200 => "diff-easy",
+            < 1600 => "diff-easy",
+            < 1900 => "diff-medium",
+            < 2100 => "diff-medium",
+            < 2400 => "diff-hard",
+            _ => "diff-hard"
+        };
+    }
+}

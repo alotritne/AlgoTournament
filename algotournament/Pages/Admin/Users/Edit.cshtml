@@ -1,0 +1,77 @@
+@page
+@model algotournament.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "admin.edit_user";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="admin.edit_user">Edit User</h1>
+    </div>
+    
+    <div class="admin-form-container">
+        <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ApplicationUserModel.Id" />
+                
+                <div class="form-group mb-3">
+                    <label asp-for="ApplicationUserModel.Handle" class="control-label" data-i18n="admin.handle"></label>
+                    <input asp-for="ApplicationUserModel.Handle" class="form-control" />
+                    <span asp-validation-for="ApplicationUserModel.Handle" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="ApplicationUserModel.Email" class="control-label" data-i18n="admin.email"></label>
+                    <input asp-for="ApplicationUserModel.Email" class="form-control" readonly />
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label asp-for="ApplicationUserModel.Rating" class="control-label" data-i18n="rankings.rating">Rating</label>
+                            <input asp-for="ApplicationUserModel.Rating" class="form-control" type="number" />
+                            <span asp-validation-for="ApplicationUserModel.Rating" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label asp-for="ApplicationUserModel.ProblemsSolved" class="control-label" data-i18n="rankings.problems_solved">Problems Solved</label>
+                            <input asp-for="ApplicationUserModel.ProblemsSolved" class="form-control" type="number" />
+                            <span asp-validation-for="ApplicationUserModel.ProblemsSolved" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label asp-for="ApplicationUserModel.ContestsParticipated" class="control-label" data-i18n="admin.contests_participated">Contests Participated</label>
+                            <input asp-for="ApplicationUserModel.ContestsParticipated" class="form-control" type="number" />
+                            <span asp-validation-for="ApplicationUserModel.ContestsParticipated" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="ApplicationUserModel.BanReason" class="control-label" data-i18n="admin.ban_reason">Ban Reason</label>
+                    <textarea asp-for="ApplicationUserModel.BanReason" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="ApplicationUserModel.BanReason" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input asp-for="ApplicationUserModel.IsBanned" class="form-check-input" />
+                        <label asp-for="ApplicationUserModel.IsBanned" class="form-check-label"></label>
+                    </div>
+                </div>
+                
+                <div class="admin-form-actions">
+                    <input type="submit" value="Save" class="btn btn-primary" data-i18n="common.save" />
+                    <a asp-page="Index" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+                </div>
+            </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

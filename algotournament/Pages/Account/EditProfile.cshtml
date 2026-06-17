@@ -1,0 +1,54 @@
+@page
+@model EditProfileModel
+@{
+    ViewData["Title"] = "account.edit_profile";
+}
+
+<div class="container mt-4">
+    <div class="admin-header">
+        <h1 data-i18n="account.edit_profile">Edit Profile</h1>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 1rem;"></div>
+
+            <h3 style="margin-bottom: 1rem;" data-i18n="account.profile_info">Profile Information</h3>
+
+            <div class="form-group">
+                <label asp-for="Input.Handle" class="form-label" data-i18n="auth.handle">Handle</label>
+                <input asp-for="Input.Handle" class="brutalist-input" />
+                <span asp-validation-for="Input.Handle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Email" class="form-label" data-i18n="auth.email">Email</label>
+                <input asp-for="Input.Email" class="brutalist-input" type="email" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem 0;" data-i18n="account.change_password">Change Password</h3>
+
+            <div class="form-group">
+                <label asp-for="Input.CurrentPassword" class="form-label" data-i18n="account.current_password">Current Password</label>
+                <input asp-for="Input.CurrentPassword" class="brutalist-input" type="password" />
+                <span asp-validation-for="Input.CurrentPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.NewPassword" class="form-label" data-i18n="account.new_password">New Password</label>
+                <input asp-for="Input.NewPassword" class="brutalist-input" type="password" />
+                <span asp-validation-for="Input.NewPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword" class="form-label" data-i18n="auth.confirm_password">Confirm Password</label>
+                <input asp-for="Input.ConfirmPassword" class="brutalist-input" type="password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" data-i18n="common.save">Save Changes</button>
+            <a asp-page="/Account/Dashboard" class="btn btn-secondary" data-i18n="common.cancel">Cancel</a>
+        </form>
+    </div>
+</div>
